@@ -6,6 +6,7 @@ import { getModule } from '@/content'
 import { NAV_ITEMS, type NavItem } from '@/content/navigation'
 import { useProgress, type LessonState } from '@/stores/progress'
 import BrandMark from './BrandMark.vue'
+import { APP_LOGOS } from '@/components/ui/appLogos'
 import { NAV_ICONS } from './navIcons'
 
 const props = withDefaults(defineProps<{ collapsed?: boolean; drawer?: boolean }>(), {
@@ -91,7 +92,7 @@ function cardClass(item: NavItem) {
 		'group relative flex items-center rounded-[4px] border-[1.5px] font-medium transition-colors duration-300 ease-out focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-flame-500 focus-visible:ring-offset-2',
 		props.collapsed
 			? 'mx-auto h-11 w-11 justify-center'
-			: 'gap-3 px-3 py-[11px] text-[14.5px] leading-snug',
+			: 'gap-2 px-3 py-[11px] text-[14.5px] leading-snug',
 		isActive(item) ? FILLED : RESTING,
 	]
 }
@@ -235,14 +236,33 @@ const expandedLessons = computed(() => {
 					:class="cardClass(item)"
 					@click="emit('navigate')"
 				>
-					<span class="relative h-[22px] w-[22px] shrink-0" aria-hidden="true">
+					<!-- App modules show the product icon on a plate that turns white when the
+					card fills; the academy's own topics use the two-tone line icon. -->
+					<span
+						v-if="APP_LOGOS[item.visual]"
+						:class="[
+							'flex h-[26px] w-[26px] shrink-0 items-center justify-center rounded-[5px] transition-colors duration-300',
+							onFill(item, 'group-hover:bg-white group-focus-visible:bg-white', 'bg-white'),
+						]"
+						aria-hidden="true"
+					>
+						<img
+							:src="APP_LOGOS[item.visual]"
+							alt=""
+							width="20"
+							height="20"
+							draggable="false"
+							class="h-5 w-5 select-none object-contain"
+						/>
+					</span>
+					<span v-else class="relative h-[26px] w-[26px] shrink-0" aria-hidden="true">
 						<component
 							:is="NAV_ICONS[item.visual]"
 							:size="22"
 							:stroke-width="1.75"
 							:color="iconStroke"
 							:class="[
-								'absolute inset-0 transition-opacity duration-300',
+								'absolute inset-[2px] transition-opacity duration-300',
 								onFill(
 									item,
 									'opacity-100 group-hover:opacity-0 group-focus-visible:opacity-0',
@@ -255,7 +275,7 @@ const expandedLessons = computed(() => {
 							:size="22"
 							:stroke-width="1.75"
 							:class="[
-								'absolute inset-0 transition-opacity duration-300',
+								'absolute inset-[2px] transition-opacity duration-300',
 								onFill(
 									item,
 									'opacity-0 group-hover:opacity-100 group-focus-visible:opacity-100',

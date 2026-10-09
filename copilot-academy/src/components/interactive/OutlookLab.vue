@@ -28,6 +28,7 @@ import CopyButton from '@/components/ui/CopyButton.vue'
 import DraftText from '@/components/ui/DraftText.vue'
 import SimNotice from '@/components/ui/SimNotice.vue'
 import TaskGoal from './TaskGoal.vue'
+import CopilotMark from '@/components/ui/CopilotMark.vue'
 
 const props = defineProps<{ taskId?: string }>()
 const progress = useProgress()
@@ -95,7 +96,7 @@ function complete() {
 						aria-label="Copilot eylemleri"
 					>
 						<span class="flex items-center gap-1.5 text-[12.5px] font-semibold text-iris-700">
-							<Sparkles :size="14" aria-hidden="true" /> Copilot:
+							<CopilotMark :size="16" /> Copilot:
 						</span>
 						<button
 							v-for="a in OUTLOOK_ACTIONS"
@@ -179,11 +180,7 @@ function complete() {
 				aria-live="polite"
 			>
 				<header class="flex items-center gap-2 border-b border-ink-100 px-4 py-3">
-					<span
-						class="flex h-6 w-6 items-center justify-center rounded-full bg-copilot text-white"
-						aria-hidden="true"
-						><Sparkles :size="13"
-					/></span>
+					<CopilotMark :size="22" />
 					<h3 id="outlook-result" class="text-[14.5px] font-semibold">Copilot sonuç paneli</h3>
 				</header>
 				<div
@@ -191,10 +188,12 @@ function complete() {
 					class="flex flex-col items-center gap-2 px-6 py-14 text-center text-[13.5px] text-ink-500"
 				>
 					<Mail :size="26" class="text-brand-300" aria-hidden="true" />
-					Zincirin üstündeki Copilot eylemlerinden birini seçin:
-					<strong class="font-semibold text-ink-700">Özetle</strong>,
-					<strong class="font-semibold text-ink-700">Aksiyonları çıkar</strong> veya
-					<strong class="font-semibold text-ink-700">Yanıt hazırla</strong>.
+					<p class="max-w-[34ch]">
+						Zincirin üstündeki Copilot eylemlerinden birini seçin:
+						<strong class="font-semibold text-ink-700">Özetle</strong>,
+						<strong class="font-semibold text-ink-700">Aksiyonları çıkar</strong> veya
+						<strong class="font-semibold text-ink-700">Yanıt hazırla</strong>.
+					</p>
 				</div>
 				<div v-else :key="action.id" class="animate-fade-in space-y-3 p-4">
 					<p

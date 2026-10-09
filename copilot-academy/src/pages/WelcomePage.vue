@@ -12,7 +12,6 @@ import {
 	PenLine,
 	ScanSearch,
 	ShieldCheck,
-	Sparkles,
 } from 'lucide-vue-next'
 import {
 	GRADUATION,
@@ -34,6 +33,8 @@ import SiteFooter from '@/components/layout/SiteFooter.vue'
 import AppTile from '@/components/ui/AppTile.vue'
 import Icon from '@/components/ui/Icon.vue'
 import ProgressRing from '@/components/ui/ProgressRing.vue'
+import CopilotMark from '@/components/ui/CopilotMark.vue'
+import { SUITE_APPS } from '@/components/ui/appLogos'
 
 const router = useRouter()
 const progress = useProgress()
@@ -172,7 +173,7 @@ const LABS = [
 						<p
 							class="inline-flex items-center gap-2 rounded-full border border-iris-200 bg-white/80 px-3 py-1 text-[12.5px] font-semibold text-iris-700 shadow-card backdrop-blur"
 						>
-							<Sparkles :size="14" aria-hidden="true" />
+							<CopilotMark :size="16" />
 							Microsoft 365 Copilot için uygulamalı Türkçe eğitim
 						</p>
 						<h1
@@ -261,9 +262,7 @@ const LABS = [
 								class="absolute end-[4%] top-[30%] w-[66%] rounded-2xl border border-white/10 bg-ink-900 p-4 text-white shadow-float animate-float"
 							>
 								<div class="flex items-center gap-2">
-									<span class="flex h-6 w-6 items-center justify-center rounded-full bg-copilot"
-										><Sparkles :size="13"
-									/></span>
+									<CopilotMark :size="22" />
 									<span class="text-[12px] font-semibold">Copilot</span>
 									<span
 										class="ms-auto rounded-full bg-white/10 px-2 py-0.5 text-[9px] font-semibold uppercase tracking-wide text-white/60"
@@ -380,6 +379,41 @@ const LABS = [
 						<dd class="mt-1.5 text-[12.5px] text-ink-500">Anında geri bildirimle</dd>
 					</div>
 				</dl>
+			</section>
+
+			<!-- Apps -->
+			<section class="mx-auto max-w-6xl px-4 pt-14 sm:px-6" aria-labelledby="apps-title">
+				<div
+					class="flex flex-col gap-6 rounded-2xl border border-ink-200/80 bg-white px-5 py-6 shadow-card sm:px-7 lg:flex-row lg:items-center lg:gap-10"
+				>
+					<div class="lg:max-w-[320px]">
+						<h2 id="apps-title" class="text-[17px] font-semibold leading-snug">
+							Copilot, Microsoft 365 uygulamalarının içinde çalışır
+						</h2>
+						<p class="mt-1.5 text-[13.5px] leading-relaxed text-ink-600">
+							Hangi uygulamada hangi özelliğin açık olduğu lisansınıza ve kurum ayarlarınıza
+							bağlıdır. Bu eğitim Copilot Chat, Word, Excel, PowerPoint, Outlook ve Teams üzerine
+							odaklanır.
+						</p>
+					</div>
+					<ul class="grid flex-1 grid-cols-4 gap-x-2 gap-y-5 sm:grid-cols-8" role="list">
+						<li
+							v-for="app in SUITE_APPS"
+							:key="app.key"
+							class="flex flex-col items-center gap-2 text-center"
+						>
+							<img
+								:src="app.src"
+								alt=""
+								width="44"
+								height="44"
+								draggable="false"
+								class="h-11 w-11 select-none object-contain"
+							/>
+							<span class="text-[12px] font-medium text-ink-700">{{ app.label }}</span>
+						</li>
+					</ul>
+				</div>
 			</section>
 
 			<!-- Skills -->

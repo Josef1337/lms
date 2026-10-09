@@ -6,7 +6,6 @@ import {
 	ArrowUpDown,
 	CircleCheck,
 	Lightbulb,
-	Sparkles,
 	TrendingDown,
 	TrendingUp,
 	TriangleAlert,
@@ -41,6 +40,7 @@ import AppFrame from '@/components/ui/AppFrame.vue'
 import SimNotice from '@/components/ui/SimNotice.vue'
 import EChart from './EChart.vue'
 import TaskGoal from './TaskGoal.vue'
+import CopilotMark from '@/components/ui/CopilotMark.vue'
 
 const props = defineProps<{ taskId?: string }>()
 const progress = useProgress()
@@ -408,7 +408,7 @@ const INSIGHT_TONE = {
 		>
 			<div class="border-b border-ink-100 bg-white px-4 py-3">
 				<p class="flex items-center gap-1.5 text-[12.5px] font-semibold text-iris-700">
-					<Sparkles :size="14" aria-hidden="true" /> Copilot’a sorun: bir analiz türü seçin
+					<CopilotMark :size="16" /> Copilot’a sorun: bir analiz türü seçin
 				</p>
 				<div class="mt-2 flex flex-wrap gap-1.5" role="group" aria-label="Analiz türü">
 					<button
@@ -624,7 +624,7 @@ const INSIGHT_TONE = {
 						v-if="!analysis || !result"
 						class="flex h-full min-h-[320px] flex-col items-center justify-center gap-2 text-center text-[13.5px] text-ink-500"
 					>
-						<Sparkles :size="24" class="text-app-excel/60" aria-hidden="true" />
+						<CopilotMark :size="30" class="opacity-80" />
 						<p id="excel-result-title">
 							Yukarıdan bir analiz türü seçin. Sonuç, grafik ve kısa açıklama burada görünecek.
 						</p>

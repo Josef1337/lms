@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { computed, onBeforeUnmount, ref } from 'vue'
-import { FileText, ListChecks, Sparkles, WandSparkles } from 'lucide-vue-next'
+import { FileText, ListChecks, Sparkles } from 'lucide-vue-next'
 import {
 	DRAFT_TYPES,
 	LENGTH_LABEL,
@@ -14,6 +14,7 @@ import DraftText from '@/components/ui/DraftText.vue'
 import SimNotice from '@/components/ui/SimNotice.vue'
 import SegmentedControl from './SegmentedControl.vue'
 import TaskGoal from './TaskGoal.vue'
+import CopilotMark from '@/components/ui/CopilotMark.vue'
 
 const props = defineProps<{ taskId?: string }>()
 const progress = useProgress()
@@ -91,8 +92,7 @@ function complete() {
 		<div class="grid gap-4 xl:grid-cols-[minmax(0,0.85fr)_minmax(0,1.15fr)]">
 			<section class="card p-4 sm:p-5" aria-labelledby="draft-settings">
 				<h3 id="draft-settings" class="flex items-center gap-2 text-[15px] font-semibold">
-					<WandSparkles :size="16" class="text-app-word" aria-hidden="true" /> Copilot ile taslak
-					oluştur
+					<CopilotMark :size="18" /> Copilot ile taslak oluştur
 				</h3>
 				<div class="mt-4 space-y-4">
 					<SegmentedControl
@@ -194,7 +194,7 @@ function complete() {
 							v-else
 							class="flex h-[290px] flex-col items-center justify-center gap-2 text-center text-[13.5px] text-ink-500"
 						>
-							<Sparkles :size="24" class="text-iris-400" aria-hidden="true" />
+							<CopilotMark :size="30" class="opacity-80" />
 							Ayarları seçin ve “Taslak oluştur” düğmesine basın.
 						</div>
 					</article>

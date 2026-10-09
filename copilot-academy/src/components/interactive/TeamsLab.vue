@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { computed, nextTick, ref } from 'vue'
-import { CalendarDays, NotebookPen, Sparkles, Users } from 'lucide-vue-next'
+import { CalendarDays, NotebookPen, Users } from 'lucide-vue-next'
 import {
 	MEETING,
 	MEETING_ACTIONS,
@@ -20,6 +20,7 @@ import DraftText from '@/components/ui/DraftText.vue'
 import RichText from '@/components/ui/RichText.vue'
 import SimNotice from '@/components/ui/SimNotice.vue'
 import TaskGoal from './TaskGoal.vue'
+import CopilotMark from '@/components/ui/CopilotMark.vue'
 
 const props = defineProps<{ taskId?: string }>()
 const progress = useProgress()
@@ -156,7 +157,7 @@ function complete() {
 					v-if="!output"
 					class="flex flex-col items-center gap-2 px-6 py-14 text-center text-[13.5px] text-ink-500"
 				>
-					<Sparkles :size="24" class="text-app-teams/60" aria-hidden="true" />
+					<CopilotMark :size="30" class="opacity-80" />
 					Copilot’tan hangi çıktıyı istemek istediğinizi seçin. Notlardaki zaman etiketlerine
 					tıklayarak bilginin transkriptte nerede geçtiğini görebilirsiniz.
 				</div>

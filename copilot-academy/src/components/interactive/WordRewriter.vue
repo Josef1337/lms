@@ -1,12 +1,13 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue'
-import { Columns2, FileText, Sparkles, WandSparkles } from 'lucide-vue-next'
+import { Columns2, FileText, WandSparkles } from 'lucide-vue-next'
 import { MESSY_FILE, MESSY_TEXT, REWRITES, type Rewrite } from '@/content/datasets/word'
 import { useProgress } from '@/stores/progress'
 import AppFrame from '@/components/ui/AppFrame.vue'
 import RichText from '@/components/ui/RichText.vue'
 import SimNotice from '@/components/ui/SimNotice.vue'
 import TaskGoal from './TaskGoal.vue'
+import CopilotMark from '@/components/ui/CopilotMark.vue'
 
 const props = defineProps<{ taskId?: string }>()
 const progress = useProgress()
@@ -135,7 +136,7 @@ const VIEWS: { id: View; label: string }[] = [
 							<p
 								class="mb-2 flex items-center gap-1.5 text-[11px] font-bold uppercase tracking-[0.08em] text-app-word"
 							>
-								<Sparkles :size="12" aria-hidden="true" /> Copilot önerisi · {{ active.label }}
+								<CopilotMark :size="14" /> Copilot önerisi · {{ active.label }}
 							</p>
 							<div
 								v-if="active.paragraphs"
@@ -196,11 +197,7 @@ const VIEWS: { id: View; label: string }[] = [
 					aria-label="Copilot bölmesi"
 				>
 					<div class="flex items-center gap-2 border-b border-ink-100 px-4 py-3">
-						<span
-							class="flex h-6 w-6 items-center justify-center rounded-full bg-copilot text-white"
-							aria-hidden="true"
-							><Sparkles :size="13"
-						/></span>
+						<CopilotMark :size="22" />
 						<p class="text-[13.5px] font-semibold">Copilot</p>
 					</div>
 					<div class="space-y-3 p-4">

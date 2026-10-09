@@ -6,7 +6,6 @@ import {
 	CircleX,
 	FileText,
 	RotateCcw,
-	Sparkles,
 	TriangleAlert,
 } from 'lucide-vue-next'
 import {
@@ -20,6 +19,7 @@ import { useProgress } from '@/stores/progress'
 import AppFrame from '@/components/ui/AppFrame.vue'
 import SimNotice from '@/components/ui/SimNotice.vue'
 import TaskGoal from './TaskGoal.vue'
+import CopilotMark from '@/components/ui/CopilotMark.vue'
 
 const props = defineProps<{ taskId?: string }>()
 const progress = useProgress()
@@ -158,12 +158,7 @@ function complete() {
 								</p>
 							</div>
 							<div class="flex gap-2.5">
-								<span
-									class="mt-1 flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-copilot text-white"
-									aria-hidden="true"
-								>
-									<Sparkles :size="14" />
-								</span>
+								<CopilotMark :size="28" class="mt-0.5" />
 								<div
 									class="min-w-0 flex-1 rounded-2xl rounded-ss-md border border-ink-200 bg-white px-4 py-3 text-[14px] leading-relaxed text-ink-700 shadow-card"
 								>

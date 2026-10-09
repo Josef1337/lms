@@ -1,7 +1,7 @@
 <script setup lang="ts">
-import { Sparkles } from 'lucide-vue-next'
 import type { ChatMessage } from '@/types/content'
 import RichText from './RichText.vue'
+import CopilotMark from './CopilotMark.vue'
 
 defineProps<{ message: ChatMessage; dark?: boolean }>()
 </script>
@@ -19,12 +19,7 @@ defineProps<{ message: ChatMessage; dark?: boolean }>()
 		</div>
 	</div>
 	<div v-else class="flex gap-2.5">
-		<span
-			class="mt-1 flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-copilot text-white shadow-card"
-			aria-hidden="true"
-		>
-			<Sparkles :size="14" />
-		</span>
+		<CopilotMark :size="28" class="mt-0.5" />
 		<div
 			:class="[
 				'min-w-0 max-w-[92%] rounded-2xl rounded-ss-md border px-4 py-3 text-[14px] leading-relaxed',
