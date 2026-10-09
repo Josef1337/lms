@@ -1,6 +1,7 @@
 import { createRouter, createWebHashHistory, type RouteRecordRaw } from 'vue-router'
 import { getLessonRef, getModule } from '@/content'
 import AppShell from '@/components/layout/AppShell.vue'
+import { resolveShortLink } from '@/lib/shortLinks'
 
 const routes: RouteRecordRaw[] = [
 	{
@@ -52,7 +53,11 @@ const routes: RouteRecordRaw[] = [
 				component: () => import('@/pages/NotFoundPage.vue'),
 				meta: { title: 'Sayfa bulunamadı' },
 			},
-			{ path: ':pathMatch(.*)*', redirect: { name: 'not-found' } },
+			{
+				path: ':pathMatch(.*)*',
+				// Empty params: an object redirect would otherwise carry pathMatch over.
+				redirect: (to) => resolveShortLink(to.path) ?? { name: 'not-found', params: {} },
+			},
 		],
 	},
 ]

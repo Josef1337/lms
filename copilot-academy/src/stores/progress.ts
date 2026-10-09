@@ -123,6 +123,14 @@ export const useProgress = defineStore('progress', () => {
 
 	watch(data, () => writeJson(STORAGE_KEY, data), { deep: true })
 
+	// Another tab saved: take its copy, so this tab's next write does not undo
+	// it. The write that follows is identical, so the tabs settle at once.
+	if (typeof window !== 'undefined')
+		window.addEventListener('storage', (event) => {
+			if (event.key !== STORAGE_KEY) return
+			Object.assign(data, parseProgress(readJson(STORAGE_KEY)))
+		})
+
 	// ------------------------------------------------------------ lessons
 
 	const lessonState = (lessonId: string): LessonState => {

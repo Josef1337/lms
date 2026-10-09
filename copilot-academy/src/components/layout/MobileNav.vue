@@ -36,7 +36,12 @@ watch(open, async (isOpen) => {
 	if (isOpen) {
 		returnFocus = document.activeElement as HTMLElement | null
 		await nextTick()
-		panel.value?.querySelector<HTMLElement>('[aria-current="page"], a[href]')?.focus()
+		// A selector list matches in document order (the brand link first), so look
+		// for the current page before falling back to the first link.
+		const target =
+			panel.value?.querySelector<HTMLElement>('[aria-current="page"]') ??
+			panel.value?.querySelector<HTMLElement>('a[href]')
+		target?.focus()
 	} else {
 		returnFocus?.focus()
 	}

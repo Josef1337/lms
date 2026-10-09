@@ -77,15 +77,21 @@ async function go(index: number) {
 		return
 	stepIndex.value = index
 	progress.setStep(lessonId.value, index)
-	window.scrollTo({ top: 0, behavior: 'smooth' })
+	scrollToTop()
 	await nextTick()
 	heading.value?.focus({ preventScroll: true })
+}
+
+// Next frame: Firefox drops a smooth scroll requested in the same frame as an
+// instant one when the page then gets shorter, leaving the next step half-way.
+function scrollToTop() {
+	requestAnimationFrame(() => window.scrollTo({ top: 0, behavior: 'smooth' }))
 }
 
 function complete() {
 	newBadges.value = progress.completeLesson(lessonId.value)
 	progress.acknowledgeBadges(newBadges.value)
-	window.scrollTo({ top: 0, behavior: 'smooth' })
+	scrollToTop()
 }
 
 function continueOn() {

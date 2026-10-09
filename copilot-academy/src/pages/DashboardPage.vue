@@ -75,10 +75,10 @@ function reset() {
 			</p>
 		</header>
 
-		<div class="mt-6 grid grid-cols-[minmax(0,1fr)] gap-5 lg:grid-cols-3">
+		<div class="mt-6 grid grid-cols-[minmax(0,1fr)] gap-5 xl:grid-cols-3">
 			<!-- Continue -->
 			<section
-				class="relative overflow-hidden rounded-3xl bg-ink-900 p-6 text-white shadow-float sm:p-7 lg:col-span-2"
+				class="relative overflow-hidden rounded-3xl bg-ink-900 p-6 text-white shadow-float sm:p-7 xl:col-span-2"
 				aria-labelledby="continue-title"
 			>
 				<div
@@ -228,7 +228,7 @@ function reset() {
 			</section>
 		</div>
 
-		<div class="mt-5 grid grid-cols-2 gap-3 lg:grid-cols-4">
+		<div class="mt-5 grid grid-cols-2 gap-3 xl:grid-cols-4">
 			<StatTile
 				label="Tamamlanan dersler"
 				:value="`${progress.overall.lessonsDone}`"
@@ -424,6 +424,10 @@ function reset() {
 					<h2 class="text-[14px] font-semibold">İlerlemeyi sıfırla</h2>
 					<p class="mt-1 text-[12.5px] text-ink-500">
 						Tüm dersler, görevler, rozetler ve test sonuçları bu tarayıcıdan silinir.
+					</p>
+					<p class="mt-1 text-[12.5px] text-ink-500">
+						İlerleme yalnızca bu cihazdaki bu tarayıcıda tutulur. Safari ve iOS, kursu yaklaşık bir
+						hafta açmadığınızda bu kaydı silebilir.
 					</p>
 					<div class="mt-3 flex flex-wrap gap-2">
 						<button

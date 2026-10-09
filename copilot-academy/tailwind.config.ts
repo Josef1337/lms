@@ -46,6 +46,17 @@ export default {
 					800: '#0e5756',
 					900: '#0f4847',
 				},
+				// Navigation accent. 500 is the reference orange used for icons and
+				// thin strokes; 600 is the fill behind white text (4.6:1 contrast).
+				flame: {
+					50: '#fef3ee',
+					100: '#fde3d8',
+					200: '#f9c4ae',
+					500: '#f1653c',
+					600: '#cf4613',
+					700: '#ae3a10',
+				},
+				line: '#ededed',
 				ink: {
 					50: '#f7f8fa',
 					100: '#eff1f5',
@@ -135,4 +146,7 @@ export default {
 		},
 	},
 	plugins: [],
+	// Touch screens keep :hover after a tap; only apply hover styles where a
+	// mouse or trackpad can actually hover.
+	future: { hoverOnlyWhenSupported: true },
 } satisfies Config

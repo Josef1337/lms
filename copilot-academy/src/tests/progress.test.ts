@@ -102,6 +102,23 @@ describe('progress store', () => {
 		expect(useProgress().hasProgress).toBe(false)
 	})
 
+	it('takes over progress saved by another tab instead of overwriting it', async () => {
+		const p = useProgress()
+		const first = LESSON_REFS[0].lesson.id
+		// Another tab completes the first lesson and saves.
+		const other = emptyProgress()
+		other.lessons[first] = { step: 3, furthest: 3, startedAt: 'x', completedAt: 'y' }
+		localStorage.setItem(STORAGE_KEY, JSON.stringify(other))
+		window.dispatchEvent(new StorageEvent('storage', { key: STORAGE_KEY }))
+		expect(p.lessonState(first)).toBe('completed')
+		// This tab's next write keeps the other tab's lesson.
+		p.toggleSidebar()
+		await nextTick()
+		expect(JSON.parse(localStorage.getItem(STORAGE_KEY) ?? '{}').lessons[first].completedAt).toBe(
+			'y'
+		)
+	})
+
 	it('resets everything', async () => {
 		const p = useProgress()
 		p.openLesson(LESSON_REFS[0].lesson.id)

@@ -37,7 +37,7 @@ function skipToContent() {
 		<aside
 			:class="[
 				'no-print sticky top-0 hidden h-screen shrink-0 border-e border-ink-200/80 bg-white transition-[width] duration-200 lg:block',
-				progress.data.sidebarCollapsed ? 'w-[76px]' : 'w-[284px]',
+				progress.data.sidebarCollapsed ? 'w-[76px]' : 'w-[312px]',
 			]"
 		>
 			<SidebarNav :collapsed="progress.data.sidebarCollapsed" />

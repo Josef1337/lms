@@ -21,10 +21,21 @@ npm run dev       # geliştirme sunucusu → http://localhost:5173
 | `npm run dev` | Vite geliştirme sunucusunu başlatır. |
 | `npm run build` | Tip kontrolü (`vue-tsc`) yapar ve `dist/` klasörüne üretim çıktısı alır. |
 | `npm run preview` | Üretim çıktısını yerelde sunar → http://localhost:4173 |
+| `npm run build:embed` | Yazdırma penceresini engelleyen gömülü görüntüleyiciler için derler (yazdırma düğmesi gizlenir, `.env.embed`). |
 | `npm test` | Vitest birim ve bileşen testlerini çalıştırır. |
 | `npm run typecheck` | Yalnızca TypeScript/Vue tip kontrolü yapar. |
 
 Üretim çıktısı tamamen statiktir (`base: './'` ve hash tabanlı yönlendirme), bu yüzden `dist/` klasörü herhangi bir statik sunucuya veya alt dizine kopyalanabilir; sunucu tarafı yönlendirme ayarı gerekmez.
+
+`dist/` bir web sunucusu üzerinden (http veya https) açılmalıdır: IIS veya kurum içi web sunucusu, SharePoint ya da herhangi bir statik barındırma. `index.html` dosyasına çift tıklamak veya bir ağ paylaşımından (`\\sunucu\klasor`) açmak Edge ve Chrome'da boş sayfa verir; tarayıcılar `file://` üzerinden modül betiklerini engeller. Yerelde denemek için `npm run preview` yeterlidir.
+
+## Tarayıcıda kullanım
+
+Eğitim tamamen tarayıcıda çalışır; kurulum, hesap veya sunucu tarafı kod gerekmez.
+
+- **Desteklenen tarayıcılar:** Chrome ve Edge 109+, Firefox ESR 115+, Safari ve iOS Safari 15.4+, Samsung Internet 20+. Derleme hedefi (`vite.config.ts` → `build.target`) ve CSS önekleri (`package.json` → `browserslist`) bu listeye göre ayarlıdır.
+- **Gezinme:** Adres çubuğundaki `#/...` yolu her sayfayı temsil eder; tarayıcının Geri/İleri düğmeleri ve sayfa yenileme beklendiği gibi çalışır.
+- **Kısa bağlantılar:** Adresin sonuna bir modül veya ders kimliği eklemek o sayfayı açar; örneğin `#excel` Excel modülünü, `#word-2` Word modülünün ikinci dersini açar. Kimlikler `src/content/modules/*.ts` dosyalarındaki `id` alanlarıdır. Sunumda katılımcıları doğrudan bir modüle yönlendirmek için kullanılabilir.
 
 ## Eğitim içeriği
 
@@ -83,6 +94,8 @@ src/
 ## Veri ve gizlilik
 
 - İlerleme yalnızca tarayıcıda, `localStorage` içindeki `copilot-academy:progress` anahtarında tutulur. Sunucu, hesap veya analitik yoktur.
+- Kayıt cihaza ve tarayıcıya özeldir; başka bir cihazda veya tarayıcıda ilerleme görünmez. Safari ve iOS, siteyi yaklaşık bir hafta boyunca açmayan kullanıcıların sitede sakladığı verileri silebilir (Intelligent Tracking Prevention). Tamamlama takibi kurumsal olarak gerekiyorsa bir LMS (SCORM/xAPI) veya sunucu entegrasyonu gerekir.
+- Aynı tarayıcıda birden fazla sekme açıksa ilerleme sekmeler arasında eşitlenir.
 - Saklanan veriler: tamamlanan ders/görev kimlikleri, seçilen cevap seçenekleri, test puanları, rozetler ve son etkinlikler. Kullanıcının yazdığı serbest metinler (ör. Prompt Builder alanları) **saklanmaz**.
 - Tamamlama özetinde isteğe bağlı olarak yazılan ad da kaydedilmez; yalnızca yazdırma için kullanılır.
 - Panel sayfasındaki “İlerlemeyi sıfırla” bölümünden (iki adımlı onayla) tüm kayıtlar silinebilir.

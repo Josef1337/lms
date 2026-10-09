@@ -608,15 +608,15 @@ const LETTERS = ['A', 'B', 'C', 'D', 'E']
 							/>
 							<div class="min-w-0 flex-1">
 								<p class="text-[14.5px] font-medium text-ink-900">
-									<span class="text-ink-400">{{ i + 1 }}.</span>
+									<span class="text-ink-400">{{ i + 1 }}.</span>{{ ' ' }}
 									<RichText :text="QUIZ_QUESTIONS[i].prompt" />
 								</p>
 								<p class="mt-1 text-[13px] text-ink-600">
-									<span class="text-ink-500">Cevabınız:</span>
+									<span class="text-ink-500">Cevabınız:</span>{{ ' ' }}
 									<RichText :text="optionText(r.questionId, r.selected)" />
 								</p>
 								<p v-if="!r.correct" class="mt-0.5 text-[13px] text-success-700">
-									<span class="text-ink-500">Doğru cevap:</span>
+									<span class="text-ink-500">Doğru cevap:</span>{{ ' ' }}
 									<RichText :text="optionText(r.questionId, QUIZ_QUESTIONS[i].correct)" />
 								</p>
 								<button

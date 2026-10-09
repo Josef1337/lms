@@ -118,6 +118,10 @@ const nextSteps = computed(() => {
 
 const today = new Date().toISOString()
 
+// Embedded viewers cannot open the print dialog; builds for them set
+// VITE_ALLOW_PRINT=false (see .env.embed) and the button is left out.
+const canPrint = import.meta.env.VITE_ALLOW_PRINT !== 'false'
+
 function print() {
 	window.print()
 }
@@ -359,7 +363,11 @@ function print() {
 								placeholder="Ad Soyad"
 							/>
 							<p class="mt-1 text-[12px] text-ink-500">
-								Bu ad kaydedilmez; yalnızca yazdırma veya PDF için kullanılır.
+								{{
+									canPrint
+										? 'Bu ad kaydedilmez; yalnızca yazdırma veya PDF için kullanılır.'
+										: 'Bu ad kaydedilmez; yalnızca bu sayfadaki özette görünür.'
+								}}
 							</p>
 						</div>
 						<dl class="grid grid-cols-2 gap-x-4 gap-y-3 text-[13.5px]">
@@ -435,7 +443,12 @@ function print() {
 							Bu özet, Copilot Academy eğitim simülasyonundaki ilerlemeyi gösterir. Akredite bir
 							sertifika veya Microsoft sertifikası değildir.
 						</p>
-						<button type="button" class="no-print btn btn-primary w-full" @click="print">
+						<button
+							v-if="canPrint"
+							type="button"
+							class="no-print btn btn-primary w-full"
+							@click="print"
+						>
 							<Printer :size="16" aria-hidden="true" /> Yazdır veya PDF olarak kaydet
 						</button>
 					</div>
