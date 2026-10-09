@@ -1,0 +1,149 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+	:root {
+		color-scheme: light;
+		--surface: #f6f8fb;
+		-webkit-tap-highlight-color: transparent;
+	}
+
+	html {
+		@apply bg-[#f6f8fb] text-ink-800 antialiased;
+		font-feature-settings: 'ss01', 'cv11';
+		text-rendering: optimizeLegibility;
+	}
+
+	body {
+		@apply min-h-screen bg-[#f6f8fb] font-sans text-[15px] leading-relaxed;
+	}
+
+	h1,
+	h2,
+	h3,
+	h4 {
+		@apply font-display text-ink-900;
+		letter-spacing: -0.012em;
+	}
+
+	::selection {
+		@apply bg-brand-100 text-brand-900;
+	}
+
+	:focus-visible {
+		@apply outline-none ring-2 ring-brand-500 ring-offset-2 ring-offset-white;
+	}
+
+	[hidden] {
+		display: none !important;
+	}
+}
+
+@layer components {
+	.btn {
+		@apply inline-flex min-h-[40px] select-none items-center justify-center gap-2 whitespace-nowrap rounded-lg px-4 text-sm font-semibold transition duration-150 disabled:cursor-not-allowed disabled:opacity-50;
+	}
+	.btn-sm {
+		@apply min-h-[32px] rounded-md px-3 text-[13px];
+	}
+	.btn-lg {
+		@apply min-h-[48px] rounded-xl px-6 text-[15px];
+	}
+	.btn-primary {
+		@apply bg-brand-600 text-white shadow-[0_1px_2px_rgba(15,58,99,.25),inset_0_1px_0_rgba(255,255,255,.12)] hover:bg-brand-700 active:bg-brand-800;
+	}
+	.btn-accent {
+		@apply bg-gradient-to-r from-brand-600 via-iris-600 to-iris-600 text-white shadow-[0_6px_18px_-6px_rgba(107,70,219,.55)] hover:brightness-110 active:brightness-95;
+	}
+	.btn-secondary {
+		@apply border border-ink-200 bg-white text-ink-800 shadow-card hover:border-ink-300 hover:bg-ink-50 active:bg-ink-100;
+	}
+	.btn-ghost {
+		@apply text-ink-600 hover:bg-ink-100 hover:text-ink-900 active:bg-ink-200;
+	}
+	.btn-on-dark {
+		@apply border border-white/15 bg-white/10 text-white hover:bg-white/15 active:bg-white/20;
+	}
+
+	.card {
+		@apply rounded-2xl border border-ink-200/80 bg-white shadow-card;
+	}
+
+	.chip {
+		@apply inline-flex items-center gap-1.5 rounded-full px-2.5 py-0.5 text-xs font-semibold;
+	}
+
+	.eyebrow {
+		@apply text-xs font-semibold uppercase tracking-[0.08em] text-ink-500;
+	}
+
+	.field-label {
+		@apply mb-1.5 flex items-center gap-2 text-sm font-semibold text-ink-800;
+	}
+
+	.field-input {
+		@apply block w-full rounded-lg border border-ink-200 bg-white px-3 py-2.5 text-[15px] text-ink-900 shadow-[inset_0_1px_1px_rgba(22,27,39,.03)] transition placeholder:text-ink-400 hover:border-ink-300 focus:border-brand-500 focus:outline-none focus:ring-2 focus:ring-brand-500/25;
+	}
+
+	.option-card {
+		@apply flex w-full items-start gap-3 rounded-xl border border-ink-200 bg-white px-4 py-3 text-start text-[15px] text-ink-800 transition duration-150 hover:border-brand-300 hover:bg-brand-50/40;
+	}
+
+	.sim-badge {
+		@apply inline-flex items-center gap-1.5 rounded-full border border-iris-200 bg-iris-50 px-2.5 py-0.5 text-[11px] font-semibold uppercase tracking-wide text-iris-700;
+	}
+
+	.scrollbar-thin {
+		scrollbar-width: thin;
+		scrollbar-color: #cdd3dc transparent;
+	}
+}
+
+@layer utilities {
+	.text-balance {
+		text-wrap: balance;
+	}
+	.text-pretty {
+		text-wrap: pretty;
+	}
+	.bg-grid {
+		background-image:
+			linear-gradient(to right, rgba(15, 58, 99, 0.05) 1px, transparent 1px),
+			linear-gradient(to bottom, rgba(15, 58, 99, 0.05) 1px, transparent 1px);
+		background-size: 32px 32px;
+	}
+	.bg-copilot {
+		background-image: linear-gradient(135deg, #0f6cbd 0%, #6b46db 55%, #0faaa4 100%);
+	}
+	.text-copilot {
+		background-image: linear-gradient(100deg, #0f6cbd 0%, #6b46db 50%, #088985 100%);
+		-webkit-background-clip: text;
+		background-clip: text;
+		color: transparent;
+	}
+}
+
+@media (prefers-reduced-motion: reduce) {
+	*,
+	*::before,
+	*::after {
+		animation-duration: 0.01ms !important;
+		animation-iteration-count: 1 !important;
+		transition-duration: 0.01ms !important;
+		scroll-behavior: auto !important;
+	}
+}
+
+@media print {
+	body {
+		background: #fff;
+	}
+	.no-print {
+		display: none !important;
+	}
+	.print-area {
+		box-shadow: none !important;
+		border-color: #cdd3dc !important;
+	}
+}

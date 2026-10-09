@@ -1,0 +1,8 @@
+node_modules
+dist
+*.local
+coverage
+
+# The repository root ignores npm lockfiles (it uses yarn); this app is
+# installed with `npm ci`, so its lockfile is tracked.
+!package-lock.json

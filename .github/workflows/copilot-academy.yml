@@ -1,0 +1,38 @@
+name: Copilot Academy
+
+on:
+  pull_request:
+    paths:
+      - 'copilot-academy/**'
+      - '.github/workflows/copilot-academy.yml'
+  push:
+    branches: [main, develop]
+    paths:
+      - 'copilot-academy/**'
+      - '.github/workflows/copilot-academy.yml'
+
+jobs:
+  build-and-test:
+    name: Typecheck, test and build
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: copilot-academy
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v6
+        with:
+          node-version: 24
+          cache: npm
+          cache-dependency-path: copilot-academy/package-lock.json
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run tests
+        run: npm test
+
+      # `build` runs vue-tsc before vite, so a type error fails here.
+      - name: Typecheck and build
+        run: npm run build

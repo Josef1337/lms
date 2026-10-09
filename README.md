@@ -167,6 +167,18 @@ To setup the repository locally follow the steps mentioned below:
 	```
 1. Now open the URL `http://learning.test:8000/lms` in your browser, you should see the app running
 
+## Copilot Academy
+
+[`copilot-academy/`](copilot-academy/README.md) is a standalone, Turkish-language interactive training app that teaches Microsoft 365 Copilot through lessons, hands-on simulations and a final quiz. It is built with the same frontend stack (Vue 3, TypeScript, Tailwind) but needs no Frappe backend: it runs entirely in the browser with sample data and keeps progress in `localStorage`. It is an educational simulation and does not connect to Microsoft 365.
+
+```sh
+cd copilot-academy
+npm ci
+npm run dev
+```
+
+See [copilot-academy/README.md](copilot-academy/README.md) for build, test and content-editing instructions.
+
 ## Learn and connect
 
 - [Telegram Public Group](https://t.me/frappelms)
