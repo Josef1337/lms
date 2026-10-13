@@ -38,13 +38,13 @@ defineProps<{
 			>
 				{{ stateLabel ?? 'Devam ediyor' }}
 			</span>
-			<span v-else class="text-[11px] font-semibold uppercase tracking-wide text-ink-400"
+			<span v-else class="text-[11px] font-semibold uppercase tracking-wide text-ink-500"
 				>Modül {{ number }}</span
 			>
 		</div>
 		<p
 			v-if="state !== 'not-started'"
-			class="mt-3 text-[11px] font-semibold uppercase tracking-wide text-ink-400"
+			class="mt-3 text-[11px] font-semibold uppercase tracking-wide text-ink-500"
 		>
 			Modül {{ number }}
 		</p>

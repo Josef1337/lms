@@ -85,7 +85,7 @@ function complete() {
 		<div class="grid gap-4 xl:grid-cols-2">
 			<AppFrame visual="outlook" title="Gelen Kutusu" subtitle="Örnek posta kutusu">
 				<div class="border-b border-ink-100 px-4 py-3">
-					<p class="text-[11px] font-semibold uppercase tracking-wide text-ink-400">
+					<p class="text-[11px] font-semibold uppercase tracking-wide text-ink-500">
 						{{ THREAD.length }} ileti · {{ THREAD[0].time.split(' ').slice(0, 2).join(' ') }} –
 						{{ THREAD[THREAD.length - 1].time.split(' ').slice(0, 2).join(' ') }}
 					</p>
@@ -196,9 +196,7 @@ function complete() {
 					</p>
 				</div>
 				<div v-else :key="action.id" class="animate-fade-in space-y-3 p-4">
-					<p
-						class="rounded-lg bg-brand-50/70 px-3 py-2 text-[12.5px] leading-relaxed text-brand-900"
-					>
+					<p class="rounded-lg bg-iris-50 px-3 py-2 text-[12.5px] leading-relaxed text-iris-800">
 						<span class="font-semibold">Prompt:</span> “{{ action.prompt }}”
 					</p>
 					<section
@@ -207,7 +205,7 @@ function complete() {
 						:class="[
 							'rounded-xl border p-3.5',
 							i === 0
-								? 'border-app-outlook/40 bg-brand-50/30 ring-1 ring-app-outlook/20'
+								? 'border-app-outlook/40 bg-[#0f6cbd]/[.05] ring-1 ring-app-outlook/20'
 								: 'border-ink-200',
 						]"
 					>

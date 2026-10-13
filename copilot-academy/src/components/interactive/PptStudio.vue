@@ -124,7 +124,7 @@ function complete() {
 						<p class="pb-1.5 text-[12.5px] text-ink-500">{{ styleMeta.audience }}</p>
 					</div>
 					<p
-						class="rounded-xl border border-brand-200 bg-brand-50/60 px-3.5 py-2.5 text-[13px] leading-relaxed text-brand-950"
+						class="rounded-xl border border-iris-200 bg-iris-50 px-3.5 py-2.5 text-[13px] leading-relaxed text-iris-900"
 					>
 						<span class="font-semibold">Prompt:</span> “{{ styleMeta.prompt }}”
 					</p>

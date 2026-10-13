@@ -121,26 +121,37 @@ const LABS = [
 </script>
 
 <template>
-	<div class="min-h-screen overflow-x-hidden">
-		<!-- Top bar -->
-		<header class="relative z-20">
+	<div class="relative min-h-screen overflow-x-hidden">
+		<!-- Top bar, laid over the red hero -->
+		<header class="absolute inset-x-0 top-0 z-20 text-white">
 			<div class="mx-auto flex h-16 max-w-6xl items-center gap-4 px-4 sm:px-6">
 				<RouterLink
 					:to="{ name: 'welcome' }"
 					class="rounded-lg"
 					aria-label="Copilot Academy ana sayfa"
 				>
-					<BrandMark tagline />
+					<BrandMark tagline on-dark />
 				</RouterLink>
 				<nav aria-label="Sayfa içi" class="ms-auto hidden items-center gap-1 md:flex">
-					<button type="button" class="btn btn-ghost btn-sm" @click="explore('nasil')">
+					<button
+						type="button"
+						class="btn btn-sm text-white hover:bg-black/10"
+						@click="explore('nasil')"
+					>
 						Nasıl öğrenirsiniz?
 					</button>
-					<button type="button" class="btn btn-ghost btn-sm" @click="explore('mufredat')">
+					<button
+						type="button"
+						class="btn btn-sm text-white hover:bg-black/10"
+						@click="explore('mufredat')"
+					>
 						Müfredat
 					</button>
 				</nav>
-				<RouterLink :to="{ name: 'dashboard' }" class="btn btn-secondary btn-sm ms-auto md:ms-2">
+				<RouterLink
+					:to="{ name: 'dashboard' }"
+					class="btn btn-sm ms-auto rounded-full border-[1.5px] border-white/70 text-white hover:bg-black/10 md:ms-2"
+				>
 					Genel Bakış
 				</RouterLink>
 			</div>
@@ -148,78 +159,86 @@ const LABS = [
 
 		<main>
 			<!-- Hero -->
-			<section class="relative isolate">
-				<div
-					class="pointer-events-none absolute inset-0 -z-10 bg-grid [mask-image:radial-gradient(ellipse_at_top,black_30%,transparent_75%)]"
+			<section class="relative isolate overflow-hidden bg-lobby text-white">
+				<!-- Concentric rings, as on the Vodafone session screen -->
+				<svg
+					viewBox="0 0 400 400"
+					class="pointer-events-none absolute -bottom-[22vmin] -end-[14vmin] -z-10 h-[78vmin] w-[78vmin] opacity-90"
+					fill="none"
+					stroke="rgba(255,255,255,.16)"
 					aria-hidden="true"
-				/>
-				<div
-					class="pointer-events-none absolute -top-40 end-[-10%] -z-10 h-[520px] w-[520px] rounded-full bg-iris-300/30 blur-3xl"
-					aria-hidden="true"
-				/>
-				<div
-					class="pointer-events-none absolute -top-24 start-[-12%] -z-10 h-[420px] w-[420px] rounded-full bg-brand-300/30 blur-3xl"
-					aria-hidden="true"
-				/>
-				<div
-					class="pointer-events-none absolute top-[360px] end-[18%] -z-10 h-[300px] w-[300px] rounded-full bg-lagoon-300/25 blur-3xl"
-					aria-hidden="true"
-				/>
+				>
+					<circle cx="200" cy="200" r="192" stroke-width="1.5" />
+					<g class="origin-center animate-[spin_90s_linear_infinite] [transform-box:fill-box]">
+						<circle cx="200" cy="200" r="170" stroke-width="2" stroke-dasharray="4 10" />
+					</g>
+					<circle cx="200" cy="200" r="148" stroke-width="16" />
+					<g
+						class="origin-center animate-[spin_120s_linear_infinite_reverse] [transform-box:fill-box]"
+					>
+						<circle cx="200" cy="200" r="122" stroke-width="1.5" stroke-dasharray="2 8" />
+					</g>
+				</svg>
 
 				<div
-					class="mx-auto grid max-w-6xl items-center gap-12 px-4 pb-16 pt-10 sm:px-6 lg:grid-cols-[minmax(0,1.02fr)_minmax(0,0.98fr)] lg:pb-24 lg:pt-16"
+					class="mx-auto grid max-w-6xl items-center gap-12 px-4 pb-20 pt-24 sm:px-6 lg:grid-cols-[minmax(0,1.02fr)_minmax(0,0.98fr)] lg:pb-28 lg:pt-28"
 				>
 					<div class="animate-fade-up">
 						<p
-							class="inline-flex items-center gap-2 rounded-full border border-iris-200 bg-white/80 px-3 py-1 text-[12.5px] font-semibold text-iris-700 shadow-card backdrop-blur"
+							class="inline-flex items-center gap-2 rounded-full border border-white/30 bg-black/15 px-3 py-1 text-[12.5px] font-semibold text-white"
 						>
 							<CopilotMark :size="16" />
 							Microsoft 365 Copilot için uygulamalı Türkçe eğitim
 						</p>
 						<h1
-							class="mt-5 text-[38px] font-bold leading-[1.08] tracking-[-0.025em] text-balance sm:text-[52px] lg:text-[56px]"
+							class="mt-5 text-[38px] font-bold leading-[1.08] tracking-[-0.025em] text-white text-balance sm:text-[52px] lg:text-[56px]"
 						>
-							Microsoft 365 Copilot ile çalışma şeklinizi
-							<span class="text-copilot">yeniden keşfedin.</span>
+							Microsoft 365 Copilot ile çalışma şeklinizi yeniden keşfedin.
 						</h1>
 						<p
-							class="mt-5 max-w-[56ch] text-[17px] leading-relaxed text-ink-600 text-pretty sm:text-[18px]"
+							class="mt-5 max-w-[56ch] text-[17px] leading-relaxed text-white text-pretty sm:text-[18px]"
 						>
 							Yapay zekâyı günlük iş akışınıza dahil edin. Daha iyi
 							<span class="whitespace-nowrap">e-postalar</span> yazın, verileri analiz edin,
 							sunumlar oluşturun ve işlerinizi daha verimli tamamlayın.
 						</p>
 						<div class="mt-8 flex flex-wrap gap-3">
-							<button type="button" class="btn btn-accent btn-lg" @click="start">
+							<button
+								type="button"
+								class="btn btn-lg rounded-full bg-white text-brand-700 shadow-[0_14px_30px_-14px_rgba(60,0,0,.6)] hover:bg-[#fff1f1] focus-visible:ring-white focus-visible:ring-offset-brand-800"
+								@click="start"
+							>
 								{{ primaryLabel }}
 								<ArrowRight :size="18" class="rtl:-scale-x-100" aria-hidden="true" />
 							</button>
-							<button type="button" class="btn btn-secondary btn-lg" @click="explore('mufredat')">
+							<button
+								type="button"
+								class="btn btn-lg rounded-full border-[1.5px] border-white/70 text-white hover:bg-black/10"
+								@click="explore('mufredat')"
+							>
 								Eğitimi Keşfet
 							</button>
 						</div>
-						<ul class="mt-7 flex flex-wrap gap-x-5 gap-y-2 text-[13px] text-ink-500" role="list">
+						<ul class="mt-7 flex flex-wrap gap-x-5 gap-y-2 text-[13px] text-white" role="list">
 							<li class="flex items-center gap-1.5">
-								<CircleCheck :size="15" class="text-success-600" aria-hidden="true" /> Gerçek hesap
+								<CircleCheck :size="15" class="text-white" aria-hidden="true" /> Gerçek hesap
 								gerekmez
 							</li>
 							<li class="flex items-center gap-1.5">
-								<CircleCheck :size="15" class="text-success-600" aria-hidden="true" /> Kurgusal
-								örnek verilerle
+								<CircleCheck :size="15" class="text-white" aria-hidden="true" /> Kurgusal örnek
+								verilerle
 							</li>
 							<li class="flex items-center gap-1.5">
-								<CircleCheck :size="15" class="text-success-600" aria-hidden="true" /> İlerleme
+								<CircleCheck :size="15" class="text-white" aria-hidden="true" /> İlerleme
 								tarayıcınızda saklanır
 							</li>
 						</ul>
 					</div>
 
 					<!-- Visual composition: original artwork evoking M365 + Copilot, not a product screenshot -->
-					<figure class="relative mx-auto aspect-[1.02] w-full max-w-[540px] animate-fade-in">
-						<div
-							class="absolute inset-[6%] rounded-[2.2rem] bg-copilot opacity-[0.14] blur-2xl"
-							aria-hidden="true"
-						/>
+					<figure
+						class="relative mx-auto aspect-[1.02] w-full max-w-[540px] animate-fade-in max-sm:hidden"
+					>
 						<div aria-hidden="true">
 							<!-- document -->
 							<div
@@ -247,7 +266,9 @@ const LABS = [
 									<AppTile visual="excel" size="xs" />
 									<span class="text-[11px] font-semibold text-ink-700">Hedef gerçekleşme</span>
 								</div>
-								<div class="mt-3 flex h-[72px] items-end gap-2 border-b border-ink-200 px-1">
+								<div
+									class="mt-3 flex h-[56px] items-end gap-2 border-b border-ink-200 px-1 xl:h-[72px]"
+								>
 									<span class="w-full rounded-t-[4px] bg-[#2a78d6]" style="height: 78%" />
 									<span class="w-full rounded-t-[4px] bg-[#2a78d6]" style="height: 96%" />
 									<span class="w-full rounded-t-[4px] bg-ink-300" style="height: 58%" />
@@ -484,7 +505,7 @@ const LABS = [
 							</span>
 							<div>
 								<p class="text-[15px] font-semibold">
-									<span class="text-ink-400">{{ i + 1 }}.</span> {{ s.label }}
+									<span class="text-ink-500">{{ i + 1 }}.</span> {{ s.label }}
 								</p>
 								<p class="text-[13.5px] text-ink-600">{{ s.text }}</p>
 							</div>
@@ -537,7 +558,7 @@ const LABS = [
 						>
 							<AppTile :visual="m.visual" size="lg" />
 							<div class="min-w-0 flex-1">
-								<p class="text-[12px] font-semibold uppercase tracking-wide text-ink-400">
+								<p class="text-[12px] font-semibold uppercase tracking-wide text-ink-500">
 									Modül {{ m.number }}
 								</p>
 								<p
@@ -565,7 +586,7 @@ const LABS = [
 						>
 							<AppTile visual="quiz" size="lg" />
 							<div class="min-w-0 flex-1">
-								<p class="text-[12px] font-semibold uppercase tracking-wide text-ink-400">
+								<p class="text-[12px] font-semibold uppercase tracking-wide text-ink-500">
 									Modül {{ QUIZ.number }}
 								</p>
 								<p
@@ -584,7 +605,7 @@ const LABS = [
 						>
 							<AppTile visual="trophy" size="lg" />
 							<div class="min-w-0 flex-1">
-								<p class="text-[12px] font-semibold uppercase tracking-wide text-ink-400">
+								<p class="text-[12px] font-semibold uppercase tracking-wide text-ink-500">
 									Modül {{ GRADUATION.number }}
 								</p>
 								<p
@@ -602,14 +623,14 @@ const LABS = [
 			<!-- Closing CTA -->
 			<section class="mx-auto max-w-6xl px-4 py-20 sm:px-6">
 				<div
-					class="relative transform-gpu overflow-hidden rounded-3xl bg-ink-900 px-6 py-10 text-white shadow-float sm:px-10"
+					class="relative isolate transform-gpu overflow-hidden rounded-3xl bg-brand-gradient px-6 py-10 text-white shadow-[0_26px_50px_-30px_rgba(140,0,0,.75)] sm:px-10"
 				>
 					<div
-						class="pointer-events-none absolute -end-16 -top-24 h-72 w-72 rounded-full bg-iris-500/35 blur-3xl"
+						class="pointer-events-none absolute -end-24 -top-32 -z-10 h-[340px] w-[340px] rounded-full border-[30px] border-white/[.08] shadow-[0_0_0_46px_rgba(255,255,255,.04)]"
 						aria-hidden="true"
 					/>
 					<div
-						class="pointer-events-none absolute -bottom-28 start-1/4 h-72 w-72 rounded-full bg-lagoon-500/25 blur-3xl"
+						class="pointer-events-none absolute -bottom-40 end-20 -z-10 h-64 w-64 rounded-full border-2 border-dashed border-white/[.14]"
 						aria-hidden="true"
 					/>
 					<div class="relative flex flex-col gap-6 md:flex-row md:items-center">
@@ -617,14 +638,14 @@ const LABS = [
 							<h2 class="text-[26px] font-bold leading-tight text-white sm:text-[30px]">
 								Hazırsanız ilk dersle başlayalım.
 							</h2>
-							<p class="mt-2 max-w-[56ch] text-[15px] text-white/70">
+							<p class="mt-2 max-w-[56ch] text-[15px] text-white">
 								İlk ders yaklaşık {{ MODULES[0].lessons[0].minutes }} dakika sürer. İstediğiniz
 								zaman ara verebilir, kaldığınız yerden devam edebilirsiniz.
 							</p>
 						</div>
 						<button
 							type="button"
-							class="btn btn-lg shrink-0 bg-white text-ink-900 shadow-raised hover:bg-brand-50"
+							class="btn btn-lg shrink-0 rounded-full bg-white text-brand-700 shadow-raised hover:bg-[#fff1f1] focus-visible:ring-white focus-visible:ring-offset-brand-800"
 							@click="start"
 						>
 							{{ primaryLabel }}

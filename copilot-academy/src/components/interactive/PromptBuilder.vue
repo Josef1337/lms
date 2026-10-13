@@ -113,7 +113,7 @@ const QUALITY_TONE = {
 	empty: 'text-ink-500',
 	weak: 'text-danger-600',
 	fair: 'text-warning-700',
-	good: 'text-brand-700',
+	good: 'text-lagoon-700',
 	strong: 'text-success-700',
 }
 
@@ -315,7 +315,7 @@ function complete() {
 								<span
 									:class="[
 										'block truncate text-[11px] font-medium',
-										covered.has(part) ? 'text-ink-800' : 'text-ink-400',
+										covered.has(part) ? 'text-ink-800' : 'text-ink-500',
 									]"
 								>
 									{{ PART_META[part].label }}

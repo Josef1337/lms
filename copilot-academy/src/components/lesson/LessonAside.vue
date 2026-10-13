@@ -21,8 +21,8 @@ const TONE = {
 	explain: {
 		icon: BookOpen,
 		label: 'Açıklama',
-		box: 'border-brand-200 bg-brand-50/50',
-		icon_: 'bg-brand-100 text-brand-700',
+		box: 'border-iris-200 bg-iris-50/50',
+		icon_: 'bg-iris-100 text-iris-700',
 	},
 	note: {
 		icon: StickyNote,

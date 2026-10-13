@@ -165,10 +165,9 @@ const expandedLessons = computed(() => {
 					x2="22"
 					y2="21"
 				>
-					<stop offset="0" stop-color="#ef653e" />
-					<stop offset="0.35" stop-color="#ef653e" />
-					<stop offset="0.55" stop-color="#e03659" />
-					<stop offset="0.72" stop-color="#8b57fb" />
+					<stop offset="0" stop-color="#ff3b3b" />
+					<stop offset="0.45" stop-color="#e60000" />
+					<stop offset="1" stop-color="#8a0000" />
 				</linearGradient>
 			</defs>
 		</svg>
@@ -201,7 +200,7 @@ const expandedLessons = computed(() => {
 				aria-label="Genel ilerleme"
 			>
 				<div
-					class="h-full rounded-full bg-gradient-to-r from-flame-500 via-[#e03659] to-[#8b57fb] transition-[width] duration-500 ease-out forced-colors:forced-color-adjust-none forced-colors:bg-[Highlight]"
+					class="h-full rounded-full bg-gradient-to-r from-brand-600 to-brand-900 transition-[width] duration-500 ease-out forced-colors:forced-color-adjust-none forced-colors:bg-[Highlight]"
 					:style="{ width: `${progress.overall.percent}%` }"
 				/>
 			</div>

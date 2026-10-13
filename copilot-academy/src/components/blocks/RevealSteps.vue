@@ -35,7 +35,7 @@ async function next() {
 				<div class="flex gap-3">
 					<div class="flex flex-col items-center">
 						<span
-							class="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-copilot text-xs font-bold text-white shadow-card"
+							class="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-brand-gradient text-xs font-bold text-white shadow-card"
 						>
 							{{ i + 1 }}
 						</span>
@@ -50,7 +50,7 @@ async function next() {
 						<RichText as="p" :text="step.body" class="mt-1 text-sm leading-relaxed text-ink-600" />
 						<p
 							v-if="step.prompt"
-							class="mt-2.5 rounded-lg border border-brand-200 bg-brand-50/70 px-3 py-2 text-[13px] text-brand-900"
+							class="mt-2.5 rounded-lg border border-iris-200 bg-iris-50 px-3 py-2 text-[13px] text-iris-800"
 						>
 							<span class="font-semibold">Örnek prompt: </span>“{{ step.prompt }}”
 						</p>

@@ -82,7 +82,7 @@ const categoryLabel = (id: string) => props.block.categories.find((c) => c.id ==
 				class="rounded-xl border border-ink-200/80 bg-white p-3.5 sm:p-4"
 			>
 				<p class="flex gap-2 text-[15px] font-medium text-ink-900">
-					<span class="text-ink-400">{{ index + 1 }}.</span>
+					<span class="text-ink-500">{{ index + 1 }}.</span>
 					<RichText :text="item.text" />
 				</p>
 				<div

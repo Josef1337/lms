@@ -20,7 +20,7 @@ const offset = computed(() => circumference.value * (1 - clamped.value / 100))
 const colors = computed(() => {
 	if (props.tone === 'light') return { track: 'rgba(255,255,255,.18)', bar: '#ffffff' }
 	if (props.tone === 'success') return { track: '#d3efdc', bar: '#118043' }
-	return { track: '#dcebfb', bar: '#0f6cbd' }
+	return { track: '#fbd6d6', bar: '#e60000' }
 })
 </script>
 

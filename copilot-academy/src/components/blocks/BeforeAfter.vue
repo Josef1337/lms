@@ -46,18 +46,18 @@ const view = ref<'before' | 'after'>('after')
 			</div>
 			<div class="hidden items-center md:flex" aria-hidden="true">
 				<span
-					class="flex h-8 w-8 items-center justify-center rounded-full bg-white text-brand-600 shadow-card ring-1 ring-ink-200"
+					class="flex h-8 w-8 items-center justify-center rounded-full bg-white text-ink-500 shadow-card ring-1 ring-ink-200"
 				>
 					<ArrowRight :size="16" class="rtl:-scale-x-100" />
 				</span>
 			</div>
 			<div
 				:class="[
-					'rounded-xl border border-brand-200 bg-white p-4 shadow-card ring-1 ring-brand-100',
+					'rounded-xl border border-success-100 bg-white p-4 shadow-card ring-1 ring-success-100',
 					view === 'before' && 'hidden md:block',
 				]"
 			>
-				<p class="eyebrow mb-2 !text-brand-700">{{ block.after.label }}</p>
+				<p class="eyebrow mb-2 !text-success-700">{{ block.after.label }}</p>
 				<DraftText
 					as="p"
 					:text="block.after.text"

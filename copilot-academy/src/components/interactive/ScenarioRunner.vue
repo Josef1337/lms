@@ -82,7 +82,7 @@ const solvedApp = (stepId: string) => {
 			class="relative overflow-hidden rounded-2xl bg-ink-900 p-5 text-white shadow-raised sm:p-6"
 		>
 			<div
-				class="pointer-events-none absolute -end-16 -top-20 h-56 w-56 rounded-full bg-lagoon-500/30 blur-3xl"
+				class="pointer-events-none absolute -end-16 -top-20 h-56 w-56 rounded-full bg-brand-600/30 blur-3xl"
 				aria-hidden="true"
 			/>
 			<div class="relative">

@@ -63,7 +63,7 @@ function complete() {
 								:class="[
 									'flex aspect-[3/4] w-full flex-col items-center justify-between rounded-md border px-1 py-1.5 text-[10px] transition',
 									activePage === p.page
-										? 'border-app-word bg-brand-50 text-brand-800 ring-2 ring-app-word/30'
+										? 'border-app-word bg-[#185abd]/[.06] text-app-word ring-2 ring-app-word/30'
 										: opened.has(p.page)
 										? 'border-success-600/40 bg-success-50/60 text-ink-600'
 										: 'border-ink-200 bg-white text-ink-500 hover:border-ink-300',

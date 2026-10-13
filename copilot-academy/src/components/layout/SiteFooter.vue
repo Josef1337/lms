@@ -19,7 +19,7 @@ withDefaults(defineProps<{ compact?: boolean }>(), { compact: false })
 				Outlook, Teams, OneNote ve OneDrive adları ve simgeleri Microsoft Corporation’ın ticari
 				markalarıdır; uygulamaları tanıtmak için kullanılmıştır.
 			</p>
-			<p class="shrink-0 text-ink-400">İlerlemeniz yalnızca bu tarayıcıda saklanır.</p>
+			<p class="shrink-0 text-ink-500">İlerlemeniz yalnızca bu tarayıcıda saklanır.</p>
 		</div>
 	</footer>
 </template>

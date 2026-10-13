@@ -86,7 +86,7 @@ function optionClass(id: string, correct?: boolean) {
 				:class="[
 					'option-card',
 					optionClass(option.id, option.correct),
-					checked && 'cursor-default hover:bg-transparent',
+					checked && 'cursor-default',
 				]"
 				@click="pick(option.id)"
 			>
@@ -94,9 +94,13 @@ function optionClass(id: string, correct?: boolean) {
 					:class="[
 						'mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center border-2 transition',
 						block.multiple ? 'rounded-md' : 'rounded-full',
-						selected.includes(option.id)
+						!selected.includes(option.id)
+							? 'border-ink-300 bg-white'
+							: !checked
 							? 'border-brand-600 bg-brand-600 text-white'
-							: 'border-ink-300 bg-white',
+							: option.correct
+							? 'border-success-600 bg-success-600 text-white'
+							: 'border-danger-600 bg-danger-600 text-white',
 					]"
 					aria-hidden="true"
 				>

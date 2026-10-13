@@ -337,14 +337,14 @@ function print() {
 					class="print-area overflow-hidden rounded-3xl border border-ink-200 bg-white shadow-raised"
 					aria-labelledby="summary-title"
 				>
-					<div class="bg-copilot px-6 py-5 text-white">
+					<div class="bg-brand-gradient px-6 py-5 text-white">
 						<div class="rounded-xl bg-white/95 px-3 py-2 shadow-card inline-flex">
 							<BrandMark />
 						</div>
 						<h2 id="summary-title" class="mt-4 text-[20px] font-bold leading-tight text-white">
 							Copilot Academy Eğitim Tamamlama Özeti
 						</h2>
-						<p class="mt-1 text-[13px] text-white/80">
+						<p class="mt-1 text-[13px] text-white">
 							{{ graduated ? 'Eğitim tamamlandı' : 'Ara özet · eğitim devam ediyor' }}
 						</p>
 					</div>
@@ -422,7 +422,7 @@ function print() {
 									:class="
 										progress.moduleStats(m.id).state === 'completed'
 											? 'text-ink-800'
-											: 'text-ink-400'
+											: 'text-ink-500'
 									"
 								>
 									<CircleCheck

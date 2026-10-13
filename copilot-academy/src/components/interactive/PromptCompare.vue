@@ -125,10 +125,10 @@ function onTabKey(event: KeyboardEvent, index: number) {
 				</div>
 			</section>
 			<section
-				class="rounded-2xl border border-brand-200 bg-white p-4 shadow-card ring-1 ring-brand-100 sm:p-5"
+				class="rounded-2xl border border-success-100 bg-white p-4 shadow-card ring-1 ring-success-100 sm:p-5"
 			>
 				<div class="flex items-center justify-between gap-2">
-					<p class="eyebrow !text-brand-700">Geliştirilmiş prompt</p>
+					<p class="eyebrow !text-success-700">Geliştirilmiş prompt</p>
 					<button
 						type="button"
 						:aria-pressed="highlight"
@@ -208,7 +208,7 @@ function onTabKey(event: KeyboardEvent, index: number) {
 						class="flex gap-2.5 text-[14.5px] leading-relaxed text-ink-700"
 					>
 						<span
-							class="mt-[9px] h-1.5 w-1.5 shrink-0 rounded-full bg-brand-500"
+							class="mt-[9px] h-1.5 w-1.5 shrink-0 rounded-full bg-success-600"
 							aria-hidden="true"
 						/>
 						<RichText :text="item" />
@@ -250,8 +250,8 @@ function onTabKey(event: KeyboardEvent, index: number) {
 						Genel, kaynaksız ve doğrulanamaz. Kim için ve neden yazıldığı belli değil.
 					</p>
 				</article>
-				<article class="rounded-2xl border border-brand-200 bg-white p-4 shadow-card sm:p-5">
-					<p class="eyebrow !text-brand-700">Geliştirilmiş prompt’un olası çıktısı</p>
+				<article class="rounded-2xl border border-success-100 bg-white p-4 shadow-card sm:p-5">
+					<p class="eyebrow !text-success-700">Geliştirilmiş prompt’un olası çıktısı</p>
 					<h4 class="mt-2 text-[16px] font-semibold">Son Çeyrek Satış Performansı</h4>
 					<div class="mt-2 space-y-3 text-[13.5px] leading-relaxed text-ink-700">
 						<div>

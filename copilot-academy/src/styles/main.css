@@ -5,18 +5,18 @@
 @layer base {
 	:root {
 		color-scheme: light;
-		--surface: #f6f8fb;
+		--surface: #f4f4f6;
 		-webkit-tap-highlight-color: transparent;
 	}
 
 	html {
-		@apply bg-[#f6f8fb] text-ink-800 antialiased;
+		@apply bg-[#f4f4f6] text-ink-800 antialiased;
 		font-feature-settings: 'ss01', 'cv11';
 		text-rendering: optimizeLegibility;
 	}
 
 	body {
-		@apply min-h-screen bg-[#f6f8fb] font-sans text-[15px] leading-relaxed;
+		@apply min-h-screen bg-[#f4f4f6] font-sans text-[15px] leading-relaxed;
 	}
 
 	h1,
@@ -51,10 +51,10 @@
 		@apply min-h-[48px] rounded-xl px-6 text-[15px];
 	}
 	.btn-primary {
-		@apply bg-brand-600 text-white shadow-[0_1px_2px_rgba(15,58,99,.25),inset_0_1px_0_rgba(255,255,255,.12)] hover:bg-brand-700 active:bg-brand-800;
+		@apply bg-brand-600 text-white shadow-[0_1px_2px_rgba(140,0,0,.25),inset_0_1px_0_rgba(255,255,255,.12)] hover:bg-brand-700 active:bg-brand-800;
 	}
 	.btn-accent {
-		@apply bg-gradient-to-r from-brand-600 via-iris-600 to-iris-600 text-white shadow-[0_6px_18px_-6px_rgba(107,70,219,.55)] hover:brightness-110 active:brightness-95;
+		@apply bg-brand-gradient text-white shadow-red hover:brightness-110 active:brightness-95;
 	}
 	.btn-secondary {
 		@apply border border-ink-200 bg-white text-ink-800 shadow-card hover:border-ink-300 hover:bg-ink-50 active:bg-ink-100;
@@ -83,11 +83,20 @@
 	}
 
 	.field-input {
-		@apply block w-full rounded-lg border border-ink-200 bg-white px-3 py-2.5 text-base text-ink-900 shadow-[inset_0_1px_1px_rgba(22,27,39,.03)] transition placeholder:text-ink-400 hover:border-ink-300 focus:border-brand-500 focus:outline-none focus:ring-2 focus:ring-brand-500/25;
+		@apply block w-full rounded-lg border border-ink-200 bg-white px-3 py-2.5 text-base text-ink-900 shadow-[inset_0_1px_1px_rgba(22,27,39,.03)] transition placeholder:text-ink-500 hover:border-ink-300 focus:border-brand-500 focus:outline-none focus:ring-2 focus:ring-brand-500/25;
 	}
 
 	.option-card {
-		@apply flex w-full items-start gap-3 rounded-xl border border-ink-200 bg-white px-4 py-3 text-start text-[15px] text-ink-800 transition duration-150 hover:border-brand-300 hover:bg-brand-50/40;
+		@apply flex w-full items-start gap-3 rounded-xl border border-ink-200 bg-white px-4 py-3 text-start text-[15px] text-ink-800 transition duration-150;
+	}
+
+	/* Hover only on options still open to a choice, so it never repaints a
+	   picked, correct or wrong option (those are aria-checked or disabled). */
+	@media (hover: hover) and (pointer: fine) {
+		.option-card:not([aria-checked='true']):not(:disabled):not([aria-disabled='true']):hover {
+			border-color: theme('colors.brand.300');
+			background-color: rgb(253 236 236 / 0.4);
+		}
 	}
 
 	.sim-badge {
@@ -96,7 +105,7 @@
 
 	.scrollbar-thin {
 		scrollbar-width: thin;
-		scrollbar-color: #cdd3dc transparent;
+		scrollbar-color: #cdcecf transparent;
 	}
 }
 
@@ -109,15 +118,24 @@
 	}
 	.bg-grid {
 		background-image:
-			linear-gradient(to right, rgba(15, 58, 99, 0.05) 1px, transparent 1px),
-			linear-gradient(to bottom, rgba(15, 58, 99, 0.05) 1px, transparent 1px);
+			linear-gradient(to right, rgba(37, 40, 43, 0.05) 1px, transparent 1px),
+			linear-gradient(to bottom, rgba(37, 40, 43, 0.05) 1px, transparent 1px);
 		background-size: 32px 32px;
 	}
-	.bg-copilot {
-		background-image: linear-gradient(135deg, #0f6cbd 0%, #6b46db 55%, #0faaa4 100%);
+	/* Brand gradient: Vodafone red to deep red. */
+	.bg-brand-gradient {
+		background-image: linear-gradient(135deg, #e60000 0%, #c30000 48%, #8a0000 100%);
 	}
-	.text-copilot {
-		background-image: linear-gradient(100deg, #0f6cbd 0%, #6b46db 50%, #088985 100%);
+	/* Welcome screen: flat brand red, darker towards the bottom right, a faint
+	   light at the top left (kept low so white text stays above 4.5:1). */
+	.bg-lobby {
+		background-color: #e60000;
+		background-image:
+			radial-gradient(120% 90% at 100% 100%, rgba(80, 0, 0, 0.55), rgba(80, 0, 0, 0) 60%),
+			radial-gradient(70% 60% at 0% 0%, rgba(255, 255, 255, 0.07), rgba(255, 255, 255, 0) 60%);
+	}
+	.text-brand-gradient {
+		background-image: linear-gradient(100deg, #e60000 0%, #c30000 50%, #8a0000 100%);
 		-webkit-background-clip: text;
 		background-clip: text;
 		color: transparent;
@@ -144,6 +162,6 @@
 	}
 	.print-area {
 		box-shadow: none !important;
-		border-color: #cdd3dc !important;
+		border-color: #cdcecf !important;
 	}
 }

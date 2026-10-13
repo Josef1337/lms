@@ -111,7 +111,7 @@ function complete() {
 					class="max-h-[420px] space-y-3 overflow-y-auto px-4 py-4 text-[14px] leading-relaxed text-ink-700 scrollbar-thin xl:max-h-[620px]"
 				>
 					<p
-						class="flex items-center gap-1.5 text-[12px] font-semibold uppercase tracking-wide text-ink-400"
+						class="flex items-center gap-1.5 text-[12px] font-semibold uppercase tracking-wide text-ink-500"
 					>
 						<FileText :size="13" aria-hidden="true" /> Uzun proje güncellemesi
 					</p>

@@ -1,16 +1,19 @@
 import type { PromptPart } from '@/types/content'
 
-/** Colour coding for the five prompt parts, shared by every prompt view. */
+/**
+ * Colour coding for the five prompt parts, shared by every prompt view. These
+ * are categorical hues, kept apart from the brand red so no two parts match.
+ */
 export const PART_STYLE: Record<PromptPart, { mark: string; chip: string; dot: string }> = {
 	goal: {
-		mark: 'bg-brand-100/80 text-brand-900 decoration-brand-500',
-		chip: 'bg-brand-50 text-brand-800 ring-brand-200',
-		dot: 'bg-brand-600',
+		mark: 'bg-blue-100/80 text-blue-900 decoration-blue-500',
+		chip: 'bg-blue-50 text-blue-800 ring-blue-200',
+		dot: 'bg-blue-600',
 	},
 	context: {
-		mark: 'bg-iris-100/80 text-iris-900 decoration-iris-500',
-		chip: 'bg-iris-50 text-iris-800 ring-iris-200',
-		dot: 'bg-iris-600',
+		mark: 'bg-violet-100/80 text-violet-900 decoration-violet-500',
+		chip: 'bg-violet-50 text-violet-800 ring-violet-200',
+		dot: 'bg-violet-600',
 	},
 	source: {
 		mark: 'bg-lagoon-100/80 text-lagoon-900 decoration-lagoon-500',

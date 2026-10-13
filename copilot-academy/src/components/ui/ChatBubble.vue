@@ -14,7 +14,7 @@ defineProps<{ message: ChatMessage; dark?: boolean }>()
 				dark ? 'bg-brand-600 text-white' : 'bg-brand-600 text-white',
 			]"
 		>
-			<p class="mb-0.5 text-[11px] font-semibold uppercase tracking-wide text-white/70">Siz</p>
+			<p class="mb-0.5 text-[11px] font-semibold uppercase tracking-wide text-white">Siz</p>
 			<RichText as="p" :text="message.text ?? ''" class="[&_strong]:text-white" />
 		</div>
 	</div>

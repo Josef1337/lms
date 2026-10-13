@@ -211,7 +211,7 @@ const LETTERS = ['A', 'B', 'C', 'D', 'E']
 					</div>
 					<p
 						v-if="progress.overall.lessonsDone < progress.overall.lessonsTotal"
-						class="mt-5 rounded-xl border border-brand-200 bg-brand-50/70 px-4 py-3 text-[13.5px] text-brand-900"
+						class="mt-5 rounded-xl border border-iris-200 bg-iris-50 px-4 py-3 text-[13.5px] text-iris-800"
 					>
 						Öneri: Teste başlamadan önce dersleri tamamlamanız daha iyi sonuç almanızı sağlar ({{
 							progress.overall.lessonsDone
@@ -284,7 +284,7 @@ const LETTERS = ['A', 'B', 'C', 'D', 'E']
 									? answers[q.id] === q.correct
 										? 'bg-success-50 text-success-700 ring-1 ring-success-100'
 										: 'bg-danger-50 text-danger-700 ring-1 ring-danger-100'
-									: 'bg-ink-100 text-ink-500 hover:bg-ink-200',
+									: 'bg-ink-100 text-ink-600 hover:bg-ink-200',
 							]"
 							@click="goTo(i)"
 						>
@@ -303,7 +303,7 @@ const LETTERS = ['A', 'B', 'C', 'D', 'E']
 					<span class="chip bg-brand-50 text-brand-700 ring-1 ring-inset ring-brand-200">{{
 						SKILLS[question.skill].label
 					}}</span>
-					<span class="text-ink-400"
+					<span class="text-ink-500"
 						>Modül {{ getModule(question.moduleId)?.number }} ·
 						{{ getModule(question.moduleId)?.navLabel }}</span
 					>
@@ -327,7 +327,7 @@ const LETTERS = ['A', 'B', 'C', 'D', 'E']
 						:class="[
 							'option-card items-center',
 							OPTION_CLASS[optionState(o.id)],
-							answered && 'cursor-default hover:bg-transparent',
+							answered && 'cursor-default',
 						]"
 						@click="!answered && (selection = o.id)"
 					>
@@ -434,12 +434,12 @@ const LETTERS = ['A', 'B', 'C', 'D', 'E']
 			>
 				<div
 					v-if="score.passed"
-					class="pointer-events-none absolute -end-20 -top-24 h-72 w-72 rounded-full bg-iris-500/35 blur-3xl"
+					class="pointer-events-none absolute -end-20 -top-24 h-72 w-72 rounded-full bg-brand-600/30 blur-3xl"
 					aria-hidden="true"
 				/>
 				<div
 					v-if="score.passed"
-					class="pointer-events-none absolute -bottom-24 start-1/4 h-64 w-64 rounded-full bg-lagoon-500/25 blur-3xl"
+					class="pointer-events-none absolute -bottom-24 start-1/4 h-64 w-64 rounded-full bg-brand-600/30 blur-3xl"
 					aria-hidden="true"
 				/>
 				<div class="relative flex flex-col gap-6 sm:flex-row sm:items-center">
@@ -608,7 +608,7 @@ const LETTERS = ['A', 'B', 'C', 'D', 'E']
 							/>
 							<div class="min-w-0 flex-1">
 								<p class="text-[14.5px] font-medium text-ink-900">
-									<span class="text-ink-400">{{ i + 1 }}.</span>{{ ' ' }}
+									<span class="text-ink-500">{{ i + 1 }}.</span>{{ ' ' }}
 									<RichText :text="QUIZ_QUESTIONS[i].prompt" />
 								</p>
 								<p class="mt-1 text-[13px] text-ink-600">

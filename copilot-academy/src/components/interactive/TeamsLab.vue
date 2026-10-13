@@ -163,9 +163,7 @@ function complete() {
 				</div>
 
 				<div v-else :key="output.id" class="animate-fade-in space-y-3 p-4" aria-live="polite">
-					<p
-						class="rounded-lg bg-[#eceefc]/70 px-3 py-2 text-[12.5px] leading-relaxed text-[#2f3285]"
-					>
+					<p class="rounded-lg bg-iris-50 px-3 py-2 text-[12.5px] leading-relaxed text-iris-800">
 						<span class="font-semibold">Prompt:</span> “{{ output.prompt }}”
 					</p>
 

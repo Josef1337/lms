@@ -112,7 +112,7 @@ function complete() {
 				</div>
 				<div :key="active.id" class="animate-fade-in space-y-3 p-4">
 					<p
-						class="flex items-start gap-2 rounded-lg bg-brand-50/70 px-3 py-2 text-[12.5px] leading-relaxed text-brand-900"
+						class="flex items-start gap-2 rounded-lg bg-iris-50 px-3 py-2 text-[12.5px] leading-relaxed text-iris-800"
 					>
 						<Sparkles :size="14" class="mt-0.5 shrink-0" aria-hidden="true" />
 						<span><span class="font-semibold">Prompt:</span> “{{ active.prompt }}”</span>

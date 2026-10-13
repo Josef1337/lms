@@ -31,10 +31,7 @@ withDefaults(defineProps<{ compact?: boolean; onDark?: boolean; tagline?: boolea
 			</span>
 			<span
 				v-if="tagline"
-				:class="[
-					'hidden text-[11px] font-medium sm:block',
-					onDark ? 'text-white/60' : 'text-ink-500',
-				]"
+				:class="['hidden text-[11px] font-medium sm:block', onDark ? 'text-white' : 'text-ink-500']"
 			>
 				Work smarter. Create faster. Learn Copilot.
 			</span>

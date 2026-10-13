@@ -1,7 +1,8 @@
 import type { Config } from 'tailwindcss'
 
-// Design tokens. Blue, violet and teal carry the brand; each Microsoft 365
-// app keeps its own accent so every lesson has a recognisable identity.
+// Design tokens. Vodafone red carries the brand, graphite is the secondary
+// tone and the neutrals are warm greys; each Microsoft 365 app keeps its own
+// accent so every lesson has a recognisable identity.
 // Layout uses logical utilities (ms-/me-/ps-/pe-/start-/end-) only, so the
 // app mirrors correctly if it is ever served right-to-left.
 export default {
@@ -9,30 +10,32 @@ export default {
 	theme: {
 		extend: {
 			colors: {
+				// Vodafone red. 600 is the brand red (white text 4.8:1), 800 the deep red.
 				brand: {
-					50: '#eef5fd',
-					100: '#dcebfb',
-					200: '#b6d5f6',
-					300: '#84b8ef',
-					400: '#4f97e5',
-					500: '#2381dc',
-					600: '#0f6cbd',
-					700: '#0c5aa0',
-					800: '#0e4a82',
-					900: '#0f3a63',
-					950: '#0a2440',
+					50: '#fdecec',
+					100: '#fbd6d6',
+					200: '#f6abab',
+					300: '#ef7878',
+					400: '#e94040',
+					500: '#f02a2a',
+					600: '#e60000',
+					700: '#c30000',
+					800: '#a80000',
+					900: '#8a0000',
+					950: '#4a0000',
 				},
+				// Graphite: the secondary tone next to the red.
 				iris: {
-					50: '#f5f3ff',
-					100: '#ebe7ff',
-					200: '#d8cffe',
-					300: '#bba9fd',
-					400: '#9d80f9',
-					500: '#825cf0',
-					600: '#6b46db',
-					700: '#5935b8',
-					800: '#4a2e95',
-					900: '#3d2a78',
+					50: '#f4f4f5',
+					100: '#e9e9eb',
+					200: '#d4d5d8',
+					300: '#b3b5b9',
+					400: '#8a8d92',
+					500: '#63666b',
+					600: '#4a4d52',
+					700: '#383b3f',
+					800: '#2a2d30',
+					900: '#1e2023',
 				},
 				lagoon: {
 					50: '#ecfdfb',
@@ -46,29 +49,29 @@ export default {
 					800: '#0e5756',
 					900: '#0f4847',
 				},
-				// Navigation accent. 500 is the reference orange used for icons and
-				// thin strokes; 600 is the fill behind white text (4.6:1 contrast).
+				// Navigation accent (sidebar cards), the same red as the brand.
 				flame: {
-					50: '#fef3ee',
-					100: '#fde3d8',
-					200: '#f9c4ae',
-					500: '#f1653c',
-					600: '#cf4613',
-					700: '#ae3a10',
+					50: '#fdecec',
+					100: '#fbd6d6',
+					200: '#f6abab',
+					500: '#e60000',
+					600: '#e60000',
+					700: '#a80000',
 				},
-				line: '#ededed',
+				line: '#e3e3e5',
+				// Warm neutral greys; 800 is the body text colour.
 				ink: {
-					50: '#f7f8fa',
-					100: '#eff1f5',
-					200: '#e2e6ec',
-					300: '#cdd3dc',
-					400: '#9aa3b2',
-					500: '#6b7487',
-					600: '#4e5668',
-					700: '#394051',
-					800: '#252b3a',
-					900: '#161b27',
-					950: '#0d111a',
+					50: '#f7f7f8',
+					100: '#f0f0f1',
+					200: '#e3e3e5',
+					300: '#cdcecf',
+					400: '#9b9da0',
+					500: '#696c70',
+					600: '#505357',
+					700: '#3c3f43',
+					800: '#25282b',
+					900: '#1a1c1f',
+					950: '#111214',
 				},
 				app: {
 					word: '#185abd',
@@ -105,10 +108,11 @@ export default {
 				mono: ['"Cascadia Code"', 'Consolas', '"SFMono-Regular"', 'Menlo', 'monospace'],
 			},
 			boxShadow: {
-				card: '0 1px 2px rgba(22, 27, 39, 0.04), 0 1px 3px rgba(22, 27, 39, 0.06)',
-				raised: '0 6px 16px -4px rgba(22, 27, 39, 0.10), 0 2px 4px -2px rgba(22, 27, 39, 0.06)',
-				float: '0 28px 56px -16px rgba(13, 17, 26, 0.28), 0 8px 18px -8px rgba(13, 17, 26, 0.12)',
-				focus: '0 0 0 3px rgba(15, 108, 189, 0.35)',
+				card: '0 1px 2px rgba(20, 20, 22, 0.04), 0 1px 3px rgba(20, 20, 22, 0.06)',
+				raised: '0 6px 16px -4px rgba(20, 20, 22, 0.10), 0 2px 4px -2px rgba(20, 20, 22, 0.06)',
+				float: '0 28px 56px -16px rgba(20, 20, 22, 0.28), 0 8px 18px -8px rgba(20, 20, 22, 0.12)',
+				focus: '0 0 0 3px rgba(230, 0, 0, 0.35)',
+				red: '0 10px 22px -12px rgba(190, 0, 0, 0.75)',
 			},
 			borderRadius: {
 				'4xl': '2rem',

@@ -65,7 +65,7 @@ function reset() {
 									? 'border-danger-600/50 bg-danger-50'
 									: 'opacity-60'
 								: '',
-							answers[q.id] && 'cursor-default hover:bg-transparent',
+							answers[q.id] && 'cursor-default',
 						]"
 						@click="answer(q.id, o.id)"
 					>

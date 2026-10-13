@@ -78,25 +78,22 @@ function reset() {
 		<div class="mt-6 grid grid-cols-[minmax(0,1fr)] gap-5 xl:grid-cols-3">
 			<!-- Continue -->
 			<section
-				class="relative overflow-hidden rounded-3xl bg-ink-900 p-6 text-white shadow-float sm:p-7 xl:col-span-2"
+				class="relative isolate overflow-hidden rounded-3xl bg-brand-gradient p-6 text-white shadow-[0_26px_50px_-30px_rgba(140,0,0,.75)] sm:p-7 xl:col-span-2"
 				aria-labelledby="continue-title"
 			>
+				<!-- Rings, as on the welcome screen -->
 				<div
-					class="pointer-events-none absolute -end-20 -top-28 h-72 w-72 rounded-full bg-iris-500/35 blur-3xl"
+					class="pointer-events-none absolute -end-24 -top-28 -z-10 h-[340px] w-[340px] rounded-full border-[30px] border-white/[.08] shadow-[0_0_0_46px_rgba(255,255,255,.04)]"
 					aria-hidden="true"
 				/>
 				<div
-					class="pointer-events-none absolute -bottom-32 start-1/3 h-72 w-72 rounded-full bg-brand-500/30 blur-3xl"
-					aria-hidden="true"
-				/>
-				<div
-					class="pointer-events-none absolute -bottom-20 -start-10 h-48 w-48 rounded-full bg-lagoon-500/25 blur-3xl"
+					class="pointer-events-none absolute -bottom-40 end-10 -z-10 h-64 w-64 rounded-full border-2 border-dashed border-white/[.14]"
 					aria-hidden="true"
 				/>
 				<div class="relative">
 					<p
 						id="continue-title"
-						class="flex items-center gap-2 text-[12px] font-semibold uppercase tracking-[0.1em] text-white/60"
+						class="flex items-center gap-2 text-[12px] font-semibold uppercase tracking-[0.1em] text-white"
 					>
 						<Sparkles :size="14" aria-hidden="true" />
 						{{
@@ -114,14 +111,14 @@ function reset() {
 						<div class="mt-4 flex items-start gap-4">
 							<AppTile :visual="continueInfo.ref.module.visual" size="lg" />
 							<div class="min-w-0">
-								<p class="text-[13px] text-white/60">
+								<p class="text-[13px] text-white">
 									Modül {{ continueInfo.ref.module.number }} ·
 									{{ continueInfo.ref.module.navLabel }}
 								</p>
 								<h2 class="mt-0.5 text-[22px] font-bold leading-tight text-white sm:text-[26px]">
 									{{ continueInfo.ref.lesson.title }}
 								</h2>
-								<p class="mt-1.5 max-w-[56ch] text-[14px] text-white/70">
+								<p class="mt-1.5 max-w-[56ch] text-[14px] text-white">
 									{{ continueInfo.ref.lesson.summary }}
 								</p>
 							</div>
@@ -129,12 +126,12 @@ function reset() {
 						<div class="mt-6 flex flex-col gap-4 sm:flex-row sm:items-center">
 							<RouterLink
 								:to="continueInfo.to"
-								class="btn btn-lg bg-white text-ink-900 shadow-raised hover:bg-brand-50"
+								class="btn btn-lg bg-white text-brand-700 shadow-raised hover:bg-brand-50 focus-visible:ring-white focus-visible:ring-offset-brand-800"
 							>
 								{{ continueInfo.started ? 'Devam et' : 'Derse başla' }}
 								<ArrowRight :size="18" class="rtl:-scale-x-100" aria-hidden="true" />
 							</RouterLink>
-							<div class="flex min-w-0 flex-1 items-center gap-3 text-[13px] text-white/70">
+							<div class="flex min-w-0 flex-1 items-center gap-3 text-[13px] text-white">
 								<span class="flex shrink-0 items-center gap-1.5"
 									><Clock :size="14" aria-hidden="true" />
 									{{ continueInfo.ref.lesson.minutes }} dk</span
@@ -156,13 +153,13 @@ function reset() {
 
 					<template v-else-if="target.kind === 'quiz'">
 						<h2 class="mt-4 text-[24px] font-bold text-white">Bütün dersleri tamamladınız.</h2>
-						<p class="mt-1.5 max-w-[56ch] text-[14px] text-white/70">
+						<p class="mt-1.5 max-w-[56ch] text-[14px] text-white">
 							{{ QUIZ_QUESTIONS.length }} soruluk final bilgi testiyle öğrendiklerinizi ölçün. Geçme
 							puanı %80.
 						</p>
 						<RouterLink
 							:to="{ name: 'quiz' }"
-							class="btn btn-lg mt-6 bg-white text-ink-900 hover:bg-brand-50"
+							class="btn btn-lg mt-6 bg-white text-brand-700 shadow-raised hover:bg-brand-50 focus-visible:ring-white focus-visible:ring-offset-brand-800"
 						>
 							Teste başla <ArrowRight :size="18" class="rtl:-scale-x-100" aria-hidden="true" />
 						</RouterLink>
@@ -172,12 +169,12 @@ function reset() {
 						<h2 class="mt-4 text-[24px] font-bold text-white">
 							Tebrikler, Copilot Academy’yi tamamladınız.
 						</h2>
-						<p class="mt-1.5 max-w-[56ch] text-[14px] text-white/70">
+						<p class="mt-1.5 max-w-[56ch] text-[14px] text-white">
 							Tamamlama özetinizi görüntüleyebilir, dilediğiniz modülü tekrar edebilirsiniz.
 						</p>
 						<RouterLink
 							:to="{ name: 'achievements' }"
-							class="btn btn-lg mt-6 bg-white text-ink-900 hover:bg-brand-50"
+							class="btn btn-lg mt-6 bg-white text-brand-700 shadow-raised hover:bg-brand-50 focus-visible:ring-white focus-visible:ring-offset-brand-800"
 						>
 							Tamamlama özetini gör
 							<ArrowRight :size="18" class="rtl:-scale-x-100" aria-hidden="true" />
@@ -408,7 +405,7 @@ function reset() {
 							>
 								<CircleCheck :size="16" class="shrink-0 text-success-600" aria-hidden="true" />
 								<span class="min-w-0 flex-1 truncate">{{ c.ref.lesson.title }}</span>
-								<time :datetime="c.at" class="shrink-0 text-[12px] text-ink-400">{{
+								<time :datetime="c.at" class="shrink-0 text-[12px] text-ink-500">{{
 									formatRelative(c.at)
 								}}</time>
 							</RouterLink>

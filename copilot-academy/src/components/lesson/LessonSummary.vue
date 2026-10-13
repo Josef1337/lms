@@ -43,11 +43,11 @@ const moduleDone = computed(
 			class="relative animate-pop overflow-hidden rounded-2xl bg-ink-900 px-5 py-6 text-white shadow-float sm:px-7"
 		>
 			<div
-				class="pointer-events-none absolute -end-16 -top-20 h-56 w-56 rounded-full bg-iris-500/30 blur-3xl"
+				class="pointer-events-none absolute -end-16 -top-20 h-56 w-56 rounded-full bg-brand-600/30 blur-3xl"
 				aria-hidden="true"
 			/>
 			<div
-				class="pointer-events-none absolute -bottom-24 start-10 h-56 w-56 rounded-full bg-lagoon-500/25 blur-3xl"
+				class="pointer-events-none absolute -bottom-24 start-10 h-56 w-56 rounded-full bg-brand-600/30 blur-3xl"
 				aria-hidden="true"
 			/>
 			<div class="relative flex flex-col gap-4 sm:flex-row sm:items-center">

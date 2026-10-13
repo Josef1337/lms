@@ -57,7 +57,7 @@ const STATE_LABEL = {
 				aria-hidden="true"
 			/>
 			<div
-				class="pointer-events-none absolute -end-24 -top-24 h-72 w-72 rounded-full bg-iris-200/40 blur-3xl"
+				class="pointer-events-none absolute -end-24 -top-24 h-72 w-72 rounded-full bg-brand-200/40 blur-3xl"
 				aria-hidden="true"
 			/>
 			<div class="relative grid gap-8 p-6 sm:p-8 lg:grid-cols-[minmax(0,1fr)_260px] lg:p-10">
@@ -171,7 +171,7 @@ const STATE_LABEL = {
 												? 'text-success-700'
 												: progress.lessonState(lesson.id) === 'in-progress'
 												? 'text-brand-700'
-												: 'text-ink-400',
+												: 'text-ink-500',
 										]"
 									>
 										{{ STATE_LABEL[progress.lessonState(lesson.id)] }}

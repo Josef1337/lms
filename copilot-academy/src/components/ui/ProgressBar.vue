@@ -16,13 +16,13 @@ const TRACK = {
 	brand: 'bg-brand-100',
 	success: 'bg-success-100',
 	light: 'bg-white/15',
-	iris: 'bg-iris-100',
+	iris: 'bg-brand-100',
 }
 const BAR = {
 	brand: 'bg-gradient-to-r from-brand-600 to-brand-500',
 	success: 'bg-success-600',
 	light: 'bg-white',
-	iris: 'bg-gradient-to-r from-brand-600 via-iris-600 to-iris-500',
+	iris: 'bg-gradient-to-r from-brand-600 to-brand-900',
 }
 const HEIGHT = { xs: 'h-1', sm: 'h-1.5', md: 'h-2.5' }
 </script>

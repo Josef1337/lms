@@ -118,11 +118,11 @@ function complete() {
 							]"
 						/>
 					</div>
-					<div class="rounded-xl border border-brand-200 bg-brand-50/60 p-3.5">
-						<p class="text-[11px] font-bold uppercase tracking-[0.08em] text-brand-700">
+					<div class="rounded-xl border border-iris-200 bg-iris-50 p-3.5">
+						<p class="text-[11px] font-bold uppercase tracking-[0.08em] text-iris-700">
 							Oluşan prompt
 						</p>
-						<p class="mt-1 text-[14px] leading-relaxed text-brand-950">“{{ prompt }}”</p>
+						<p class="mt-1 text-[14px] leading-relaxed text-iris-900">“{{ prompt }}”</p>
 					</div>
 					<div class="rounded-xl border border-ink-200 bg-ink-50/70 p-3.5">
 						<p

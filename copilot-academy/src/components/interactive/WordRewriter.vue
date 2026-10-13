@@ -119,7 +119,7 @@ const VIEWS: { id: View; label: string }[] = [
 							aria-label="Özgün metin"
 						>
 							<p
-								class="mb-2 flex items-center gap-1.5 text-[11px] font-bold uppercase tracking-[0.08em] text-ink-400"
+								class="mb-2 flex items-center gap-1.5 text-[11px] font-bold uppercase tracking-[0.08em] text-ink-500"
 							>
 								<FileText :size="12" aria-hidden="true" /> Özgün metin
 							</p>
@@ -211,7 +211,7 @@ const VIEWS: { id: View; label: string }[] = [
 								:class="[
 									'flex w-full items-center gap-2 rounded-lg border px-3 py-2 text-start text-[13.5px] font-semibold transition',
 									activeId === r.id
-										? 'border-app-word bg-brand-50 text-brand-900'
+										? 'border-app-word bg-[#185abd]/[.06] text-ink-900'
 										: tried.has(r.id)
 										? 'border-ink-200 bg-ink-50 text-ink-700'
 										: 'border-ink-200 bg-white text-ink-800 hover:border-brand-300',
@@ -224,7 +224,7 @@ const VIEWS: { id: View; label: string }[] = [
 						</div>
 						<template v-if="active">
 							<div
-								class="rounded-lg bg-brand-50/70 px-3 py-2.5 text-[12.5px] leading-relaxed text-brand-900"
+								class="rounded-lg bg-iris-50 px-3 py-2.5 text-[12.5px] leading-relaxed text-iris-800"
 							>
 								<span class="font-semibold">Prompt:</span> “{{ active.prompt }}”
 							</div>

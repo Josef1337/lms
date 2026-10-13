@@ -9,8 +9,8 @@ const props = defineProps<{ block: CalloutBlock }>()
 const TONES = {
 	info: {
 		icon: Info,
-		box: 'border-brand-200 bg-brand-50/70',
-		icon_: 'text-brand-700',
+		box: 'border-iris-200 bg-iris-50',
+		icon_: 'text-iris-700',
 		title: 'Bilgi',
 	},
 	tip: {

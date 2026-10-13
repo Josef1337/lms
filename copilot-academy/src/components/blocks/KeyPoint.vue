@@ -7,7 +7,7 @@ defineProps<{ block: KeyPointBlock }>()
 </script>
 
 <template>
-	<div class="rounded-2xl bg-copilot p-[1.5px] shadow-raised">
+	<div class="rounded-2xl bg-brand-gradient p-[1.5px] shadow-raised">
 		<div class="rounded-[calc(1rem-1px)] bg-white px-5 py-4">
 			<p
 				class="mb-1.5 flex items-center gap-1.5 text-xs font-bold uppercase tracking-[0.08em] text-iris-700"

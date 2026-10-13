@@ -154,7 +154,7 @@ function rowTone(r: typeof rows[number]) {
 	if (id === 'regions' && weakRegions.includes(r.region)) return 'bg-amber-50'
 	if (id === 'below' && r.actual < r.target) return 'bg-danger-50/70'
 	if ((id === 'below' || id === 'insights') && isOutlier(r)) return 'bg-amber-50'
-	if (id === 'products' && r.product === products[0].product) return 'bg-brand-50/60'
+	if (id === 'products' && r.product === products[0].product) return 'bg-success-50'
 	return ''
 }
 
@@ -465,7 +465,7 @@ const INSIGHT_TONE = {
 						>
 						<span class="font-sans italic text-ink-400">fx</span>
 						<span>=E{{ focusRow }}/D{{ focusRow }}</span>
-						<span class="ms-auto hidden font-sans text-[11px] text-ink-400 sm:inline"
+						<span class="ms-auto hidden font-sans text-[11px] text-ink-500 sm:inline"
 							>G sütunu Copilot’ın formül önerisiyle eklendi</span
 						>
 					</div>
@@ -635,7 +635,7 @@ const INSIGHT_TONE = {
 								{{ analysis.label }}
 							</h3>
 							<p
-								class="mt-1 rounded-lg bg-brand-50/70 px-3 py-2 text-[12.5px] leading-relaxed text-brand-900"
+								class="mt-1 rounded-lg bg-iris-50 px-3 py-2 text-[12.5px] leading-relaxed text-iris-800"
 							>
 								<span class="font-semibold">Prompt:</span> “{{ analysis.prompt }}”
 							</p>
