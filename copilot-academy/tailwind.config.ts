@@ -139,6 +139,10 @@ export default {
 					'0%, 100%': { opacity: '1' },
 					'50%': { opacity: '0' },
 				},
+				'ping-soft': {
+					from: { transform: 'scale(.8)', opacity: '.9' },
+					to: { transform: 'scale(1.5)', opacity: '0' },
+				},
 			},
 			animation: {
 				'fade-up': 'fade-up .28s cubic-bezier(.2,.7,.3,1) both',
@@ -146,6 +150,7 @@ export default {
 				pop: 'pop .42s cubic-bezier(.2,.7,.3,1) both',
 				float: 'float 7s ease-in-out infinite',
 				caret: 'caret 1s steps(1) infinite',
+				'ping-soft': 'ping-soft 1.6s ease-out infinite',
 			},
 		},
 	},

@@ -212,6 +212,7 @@ export interface CasesTaskBlock {
 }
 
 export type InteractiveKey =
+	| 'copilotTour'
 	| 'reportExplorer'
 	| 'promptBuilder'
 	| 'promptCompare'

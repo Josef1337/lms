@@ -17,7 +17,7 @@ const intro: Module = {
 		'Copilot’ın sınırlarını ve insan kontrolü gereken durumları tanımak',
 	],
 	availability:
-		'Microsoft 365 Copilot’ın hangi uygulamalarda ve hangi özelliklerle kullanılabildiği; lisans türüne, uygulama sürümüne, yönetici ayarlarına ve kurumunuzun yapılandırmasına göre değişebilir. Bu eğitimdeki ekranlar gerçek ürünü değil, örnek arayüzleri gösterir.',
+		'Microsoft 365 Copilot’ın hangi uygulamalarda ve hangi özelliklerle kullanılabildiği; lisans türüne, uygulama sürümüne, yönetici ayarlarına ve kurumunuzun yapılandırmasına göre değişebilir. Arayüz turundaki ekran görüntüsü dışında, bu eğitimdeki ekranlar gerçek ürünü değil örnek arayüzleri gösterir.',
 	lessons: [
 		{
 			id: 'giris-1',
@@ -339,11 +339,12 @@ const intro: Module = {
 			id: 'giris-2',
 			title: 'Copilot nerede çalışır, nerede durur?',
 			summary:
-				'Copilot Chat ile uygulama içi deneyimleri ayırt edin; sınırları ve insan kontrolünü öğrenin.',
-			minutes: 14,
+				'Copilot ekranını tanıyın, Copilot Chat ile uygulama içi deneyimleri ayırt edin; sınırları ve insan kontrolünü öğrenin.',
+			minutes: 20,
 			objectives: [
 				'Copilot’ın Microsoft 365 uygulamalarıyla ilişkisini açıklamak',
 				'Copilot Chat ile uygulama içi Copilot’ı karşılaştırmak',
+				'Copilot uygulamasının ana ekranındaki temel alanları tanımak',
 				'Uzun bir raporu Copilot ile anlamanın adımlarını uygulamak',
 				'İnsan kontrolü gerektiren işleri ayırt etmek',
 			],
@@ -445,6 +446,27 @@ const intro: Module = {
 								'İş **tek bir belgenin içindeyse**: o uygulamadaki Copilot.',
 								'İş **birden fazla kaynağı** birleştirmeyi veya serbest düşünmeyi gerektiriyorsa: Copilot Chat.',
 							],
+						},
+					],
+				},
+				{
+					id: 'arayuz-turu',
+					phase: 'explore',
+					title: 'Copilot ekranını tanıyın: arayüz turu',
+					wide: true,
+					blocks: [
+						{ type: 'interactive', component: 'copilotTour', taskId: 'giris-2-arayuz-turu' },
+					],
+					aside: [
+						{
+							tone: 'tip',
+							title: 'Önce kalkana bakın',
+							body: 'Şirket dokümanı yüklemeden veya hassas bir konu yazmadan önce sağ üstteki yeşil kalkanı (durak 1) kontrol etmeyi alışkanlık hâline getirin.',
+						},
+						{
+							tone: 'note',
+							title: 'Ekranınız farklıysa',
+							body: 'Kurumunuzun sabitlediği ajanlar, menü adları ve öneri düğmeleri bu görüntüden farklı olabilir. Bulamadığınız bir alan olursa eğitmeninize veya BT ekibinize sorun.',
 						},
 					],
 				},
@@ -748,6 +770,7 @@ const intro: Module = {
 			takeaways: [
 				'Copilot’a **Copilot Chat** ve **uygulama içi** deneyimler üzerinden ulaşırsınız; seçim işin bağlamına bağlıdır.',
 				'Tek belgedeki işler için uygulama içi Copilot, çok kaynaklı sentez için Copilot Chat daha uygundur.',
+				'Copilot uygulamasında en sık kullanacağınız alanlar **mesaj kutusu, Work IQ, yanıt modu ve yeşil kalkandır**; şirket verisiyle çalışmadan önce kalkanı kontrol edin.',
 				'Uzun bir raporu anlamak için **özet → önemli bulgular → takip soruları → doğrulama** sırasını izleyin.',
 				'Kişileri, müşterileri veya şirketi bağlayan kararlar **insan değerlendirmesi** gerektirir.',
 			],

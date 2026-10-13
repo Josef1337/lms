@@ -27,6 +27,7 @@ const lazy = (load: () => Promise<{ default: Component }>) =>
 	defineAsyncComponent({ loader: load, delay: 120 })
 
 const INTERACTIVE: Record<InteractiveKey, Component> = {
+	copilotTour: lazy(() => import('@/components/interactive/CopilotTour.vue')),
 	reportExplorer: lazy(() => import('@/components/interactive/ReportExplorer.vue')),
 	promptBuilder: lazy(() => import('@/components/interactive/PromptBuilder.vue')),
 	promptCompare: lazy(() => import('@/components/interactive/PromptCompare.vue')),
