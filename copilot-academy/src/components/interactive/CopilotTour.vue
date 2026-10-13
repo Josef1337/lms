@@ -14,7 +14,7 @@ import {
 	TriangleAlert,
 	X,
 } from 'lucide-vue-next'
-import shotUrl from '@/assets/tour/copilot-home.webp'
+import shotUrl from '@/assets/tour/copilot-home.png'
 import { TOUR_IMAGE_SIZE as IMG, TOUR_STOPS } from '@/content/datasets/copilotTour'
 import { useProgress } from '@/stores/progress'
 import CopyButton from '@/components/ui/CopyButton.vue'
@@ -44,7 +44,10 @@ const savedIds = (key: 'seen' | 'tried'): string[] => {
 		: []
 }
 
+/** Open stop, or null while the card is closed. */
 const current = ref<number | null>(null)
+/** Last stop shown; the arrow keys carry on from it after the card closes. */
+const last = ref(0)
 const seen = ref(new Set<string>(savedIds('seen')))
 const tried = ref(new Set<string>(savedIds('tried')))
 const stop = computed(() => (current.value === null ? null : TOUR_STOPS[current.value]))
@@ -54,15 +57,19 @@ const done = computed(() => !!props.taskId && progress.isTaskDone(props.taskId))
 function go(i: number) {
 	if (i < 0 || i > LAST) return
 	current.value = i
+	last.value = i
 	seen.value = new Set(seen.value).add(TOUR_STOPS[i].id)
 }
 
 function next() {
-	go(current.value === null || current.value === LAST ? 0 : current.value + 1)
+	go(last.value === LAST ? 0 : last.value + 1)
 }
 
 function prev() {
-	go(current.value === null ? 0 : Math.max(current.value - 1, 0))
+	const fromButton = document.activeElement === prevButton.value
+	go(Math.max(last.value - 1, 0))
+	// The button turns disabled at the first stop, which would drop focus to the page.
+	if (fromButton && last.value === 0) nextTick(() => nextButton.value?.focus())
 }
 
 function hide() {
@@ -112,6 +119,8 @@ const stage = ref<HTMLElement>()
 const frame = ref<HTMLElement>()
 const shot = ref<HTMLElement>()
 const card = ref<HTMLElement>()
+const prevButton = ref<HTMLButtonElement>()
+const nextButton = ref<HTMLButtonElement>()
 const badgeEls = ref<(HTMLButtonElement | null)[]>([])
 
 const frameWidth = ref(0)
@@ -206,15 +215,20 @@ async function pickFromList(i: number) {
 		stage.value?.scrollIntoView({ block: 'start', behavior: motion() })
 }
 
+// Widgets that use these keys themselves keep them while they have focus.
+const OWN_KEYS =
+	'textarea, select, [contenteditable="true"], [role="dialog"], [role="radiogroup"], [role="tablist"], [role="listbox"], [role="menu"], [role="slider"]'
+
+/** Page-wide shortcuts while the tour is on screen, as in the original tour. */
 function onKey(e: KeyboardEvent) {
-	if (e.altKey || e.ctrlKey || e.metaKey) return
-	const t = e.target as HTMLElement
-	if (t.closest('textarea, select, [contenteditable="true"]')) return
+	if (e.defaultPrevented || e.altKey || e.ctrlKey || e.metaKey) return
+	const t = e.target instanceof Element ? e.target : null
+	if (t?.closest(OWN_KEYS)) return
 	if (t instanceof HTMLInputElement && t.type !== 'checkbox') return
 	const key = e.key
 	let target: number | null = null
-	if (key === 'ArrowRight') target = current.value === null ? 0 : Math.min(current.value + 1, LAST)
-	else if (key === 'ArrowLeft') target = current.value === null ? 0 : Math.max(current.value - 1, 0)
+	if (key === 'ArrowRight') target = Math.min(last.value + 1, LAST)
+	else if (key === 'ArrowLeft') target = Math.max(last.value - 1, 0)
 	else if (/^[1-9a-dA-D]$/.test(key))
 		target = TOUR_STOPS.findIndex((s) => s.id === key.toUpperCase())
 	else if (key === 'Escape' && current.value !== null) {
@@ -231,6 +245,7 @@ let observer: ResizeObserver | undefined
 onMounted(() => {
 	measure()
 	go(0)
+	document.addEventListener('keydown', onKey)
 	if (typeof ResizeObserver !== 'undefined') {
 		observer = new ResizeObserver(() => {
 			measure()
@@ -240,7 +255,10 @@ onMounted(() => {
 		if (shot.value) observer.observe(shot.value)
 	}
 })
-onBeforeUnmount(() => observer?.disconnect())
+onBeforeUnmount(() => {
+	observer?.disconnect()
+	document.removeEventListener('keydown', onKey)
+})
 
 const announcement = computed(() =>
 	stop.value
@@ -252,7 +270,7 @@ const announcement = computed(() =>
 </script>
 
 <template>
-	<div class="space-y-4" @keydown="onKey">
+	<div class="space-y-4">
 		<div class="flex flex-wrap items-end justify-between gap-x-6 gap-y-3">
 			<p class="max-w-2xl text-[14.5px] leading-relaxed text-ink-700">
 				Ekrandaki numaralara tıklayın ya da
@@ -452,6 +470,7 @@ const announcement = computed(() =>
 					</span>
 					<div class="flex gap-2">
 						<button
+							ref="prevButton"
 							type="button"
 							class="btn btn-secondary btn-sm"
 							:disabled="current === 0"
@@ -459,7 +478,7 @@ const announcement = computed(() =>
 						>
 							<ChevronLeft :size="15" aria-hidden="true" /> Önceki
 						</button>
-						<button type="button" class="btn btn-primary btn-sm" @click="next">
+						<button ref="nextButton" type="button" class="btn btn-primary btn-sm" @click="next">
 							<template v-if="current === LAST">
 								<RotateCcw :size="15" aria-hidden="true" /> Başa dön
 							</template>
@@ -511,7 +530,7 @@ const announcement = computed(() =>
 						<Check
 							v-else-if="seen.has(s.id)"
 							:size="16"
-							class="shrink-0 text-ink-400"
+							class="shrink-0 text-ink-500"
 							aria-hidden="true"
 						/>
 						<span class="sr-only">{{
@@ -523,9 +542,10 @@ const announcement = computed(() =>
 		</section>
 
 		<p class="text-[12.5px] leading-relaxed text-ink-500">
-			Ekran görüntüsü Microsoft 365 Copilot uygulamasının bir sürümünden alınmıştır; kişisel hesap
-			bilgileri gizlenmiştir. Menü adları ve yerleri; sürüme, lisansa ve kurumunuzun ayarlarına göre
-			farklı olabilir. Görseldeki öğeler tıklanabilir değildir, yalnızca numaralar kartları açar.
+			Ekran görüntüsü, gerçek bir kurumun Microsoft 365 Copilot uygulamasından alınmıştır; sol
+			menüdeki ajan adları o kuruma aittir ve kişisel hesap bilgileri gizlenmiştir. Menü adları ve
+			yerleri; sürüme, lisansa ve kurumunuzun ayarlarına göre farklı olabilir. Görseldeki öğeler
+			tıklanabilir değildir, yalnızca numaralar kartları açar.
 		</p>
 
 		<TaskGoal v-if="taskId" :task-id="taskId" :goals="goals" @complete="complete">

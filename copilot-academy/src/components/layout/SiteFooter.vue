@@ -14,10 +14,11 @@ withDefaults(defineProps<{ compact?: boolean }>(), { compact: false })
 		>
 			<p class="max-w-3xl">
 				Copilot Academy, eğitim amaçlı bağımsız bir simülasyondur ve Microsoft ile bağlantılı
-				değildir. Hiçbir Microsoft 365 hesabına bağlanmaz, e-posta göndermez, dosyalara erişmez. Tüm
-				şirketler, kişiler ve veriler kurgusaldır. Microsoft 365, Copilot, Word, Excel, PowerPoint,
-				Outlook, Teams, OneNote ve OneDrive adları ve simgeleri Microsoft Corporation’ın ticari
-				markalarıdır; uygulamaları tanıtmak için kullanılmıştır.
+				değildir. Hiçbir Microsoft 365 hesabına bağlanmaz, e-posta göndermez, dosyalara erişmez.
+				Arayüz turundaki ekran görüntüsü dışında tüm şirketler, kişiler ve veriler kurgusaldır.
+				Microsoft 365, Copilot, Word, Excel, PowerPoint, Outlook, Teams, OneNote ve OneDrive adları
+				ve simgeleri Microsoft Corporation’ın ticari markalarıdır; uygulamaları tanıtmak için
+				kullanılmıştır.
 			</p>
 			<p class="shrink-0 text-ink-500">İlerlemeniz yalnızca bu tarayıcıda saklanır.</p>
 		</div>

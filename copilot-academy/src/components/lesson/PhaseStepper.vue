@@ -12,7 +12,9 @@ defineEmits<{ go: [index: number] }>()
 </script>
 
 <template>
-	<nav aria-label="Ders adımları" class="-mx-1 overflow-x-auto px-1 pb-1 scrollbar-thin">
+	<!-- relative: the sr-only labels are absolutely positioned and would
+	     otherwise widen the page instead of staying inside this scroller. -->
+	<nav aria-label="Ders adımları" class="relative -mx-1 overflow-x-auto px-1 pb-1 scrollbar-thin">
 		<ol class="flex min-w-max items-center gap-1" role="list">
 			<li v-for="(step, i) in steps" :key="i" class="flex items-center gap-1">
 				<span

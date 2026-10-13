@@ -9,7 +9,13 @@ import LessonAside from '@/components/lesson/LessonAside.vue'
 import LessonControls from '@/components/lesson/LessonControls.vue'
 import LessonSummary from '@/components/lesson/LessonSummary.vue'
 import PhaseStepper from '@/components/lesson/PhaseStepper.vue'
-import { PHASES, PHASE_PURPOSE, requiredTasks, type StepPhase } from '@/components/lesson/phases'
+import {
+	PHASES,
+	PHASE_PURPOSE,
+	firstOpenStep,
+	requiredTasks,
+	type StepPhase,
+} from '@/components/lesson/phases'
 import AppTile from '@/components/ui/AppTile.vue'
 import ProgressBar from '@/components/ui/ProgressBar.vue'
 
@@ -32,12 +38,20 @@ const stepIndex = ref(0)
 const newBadges = ref<string[]>([])
 const heading = ref<HTMLElement | null>(null)
 
+/** Furthest step an unfinished lesson may open: never past an open task. */
+function gate(id: string): number {
+	const ref = getLessonRef(id)
+	if (!ref || progress.lessonState(id) === 'completed') return Infinity
+	const open = firstOpenStep(ref.lesson.steps, progress.isTaskDone)
+	return open === -1 ? Infinity : open
+}
+
 watch(
 	lessonId,
 	(id) => {
 		progress.openLesson(id)
 		const saved = progress.data.lessons[id]?.step ?? 0
-		stepIndex.value = Math.min(Math.max(0, saved), totalSteps.value - 1)
+		stepIndex.value = Math.min(Math.max(0, saved), totalSteps.value - 1, gate(id))
 		newBadges.value = []
 	},
 	{ immediate: true }
@@ -47,7 +61,9 @@ const isSummary = computed(() => stepIndex.value === lesson.value.steps.length)
 const step = computed(() => (isSummary.value ? null : lesson.value.steps[stepIndex.value]))
 const phase = computed<StepPhase>(() => step.value?.phase ?? 'continue')
 const completed = computed(() => progress.lessonState(lessonId.value) === 'completed')
-const furthest = computed(() => progress.data.lessons[lessonId.value]?.furthest ?? 0)
+const furthest = computed(() =>
+	Math.min(progress.data.lessons[lessonId.value]?.furthest ?? 0, gate(lessonId.value))
+)
 
 const pending = computed(() =>
 	step.value ? requiredTasks(step.value).filter((id) => !progress.isTaskDone(id)) : []

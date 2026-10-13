@@ -1,6 +1,7 @@
 // Copilot home-screen tour: what each area of the Microsoft 365 Copilot app
-// does. Coordinates are pixels of the 1972×1066 screenshot
-// (src/assets/tour/copilot-home.webp); the component turns them into
+// does. Texts follow the supplied tour, with menu names as they appear on the
+// screen. Coordinates are pixels of the 1972×1066 screenshot
+// (src/assets/tour/copilot-home.png); the component turns them into
 // percentages, so the numbered badges stay on their spot at every width.
 // The account photo and name in the screenshot are replaced with a neutral
 // avatar; nothing else in the image was moved.
@@ -53,11 +54,11 @@ export const TOUR_STOPS: TourStop[] = [
 		where: 'Üst bar, sol',
 		box: [270, 49, 348, 86],
 		badge: [309, 112],
-		what: 'Copilot’un cevap verirken iş bağlamınızı (erişiminiz olan dosyalar, kişiler, kurum bilgisi) kullandığını gösterir.',
+		what: 'Copilot’ın cevap verirken iş bağlamınızı (erişiminiz olan dosyalar, kişiler, kurum bilgisi) kullandığını gösterir.',
 		when: 'Şirket içi bir konu sorduğunuzda bu kapsamın açık olduğundan emin olun. Genel bir konuyu araştırırken web kaynakları öne çıkar.',
 		how: [
 			'Work IQ düğmesine tıklayın.',
-			'Açılan seçeneklerde Copilot’un hangi kaynakları kullandığını görün.',
+			'Açılan seçeneklerde Copilot’ın hangi kaynakları kullandığını görün.',
 			'Sorunuza göre kapsamı ayarlayın.',
 		],
 		prompt:
@@ -73,7 +74,7 @@ export const TOUR_STOPS: TourStop[] = [
 		where: 'Üst bar, “Detaylı akıl yürütme”',
 		box: [354, 49, 510, 86],
 		badge: [432, 112],
-		what: 'Copilot’un cevap vermeden önce ne kadar derin düşüneceğini seçer.',
+		what: 'Copilot’ın cevap vermeden önce ne kadar derin düşüneceğini seçer.',
 		when: 'Strateji, karşılaştırma ve analiz sorularında detaylı mod. Kısa özet, çeviri ve yazışma için hızlı mod yeterli.',
 		how: [
 			'“Detaylı akıl yürütme” yazısının yanındaki oka tıklayın.',
@@ -104,7 +105,7 @@ export const TOUR_STOPS: TourStop[] = [
 		expect:
 			'Birkaç saniye içinde madde madde bir özet. Cevabın altında kopyalama ve yeniden oluşturma seçenekleri.',
 		note: 'Word, PDF, Excel ve PowerPoint dosyaları eklenebilir. Çok büyük dosyalarda cevap gecikebilir.',
-		tryIt: 'Getirdiğiniz bir dokümanı + ile ekleyip özetini isteyin.',
+		tryIt: 'Paylaşılmasında sakınca olmayan bir iş dokümanını + ile ekleyip özetini isteyin.',
 	},
 	{
 		id: '5',
@@ -114,14 +115,14 @@ export const TOUR_STOPS: TourStop[] = [
 		box: [736, 655, 1384, 702],
 		badge: [706, 679],
 		what: 'Hazır başlangıç promptları. Tek tıkla bir görevi başlatır.',
-		when: 'Ne soracağınızı bilmediğinizde veya Copilot’un neler yapabildiğini görmek istediğinizde.',
+		when: 'Ne soracağınızı bilmediğinizde veya Copilot’ın neler yapabildiğini görmek istediğinizde.',
 		how: [
 			'Bir düğmeye tıklayın.',
 			'Kutuya gelen hazır metni kendi konunuza göre düzenleyin.',
 			'Gönderin.',
 		],
 		expect: 'Mesaj kutusuna, düzenleyebileceğiniz hazır bir prompt gelir.',
-		note: 'Gelen Kutusu Değerlendirmesi ve Toplantı Hazırlığı e-posta ve takvime dayanır. Exchange kullanmadığımız için bu kurulumda beklenen sonucu vermez.',
+		note: 'Gelen Kutusu Değerlendirmesi ve Toplantı Hazırlığı e-posta ve takviminize dayanır. Kurumunuzun e-postası ve takvimi Microsoft 365’te (Exchange Online) değilse bu düğmeler beklenen sonucu vermez.',
 		tryIt: 'Dosya İçgörüleri düğmesine tıklayıp gelen metne bakın.',
 	},
 	{
@@ -155,8 +156,8 @@ export const TOUR_STOPS: TourStop[] = [
 			'Ad verin, ör. “EXCO Q4 Kurul Hazırlığı”.',
 			'İlgili dosyaları ekleyin ve not defteri içinde soru sorun.',
 		],
-		prompt: 'Bu dokümanlar arasında çelişen bilgi veya rakam var mı? Varsa tablo halinde göster.',
-		expect: 'Copilot’un yalnızca not defterindeki kaynaklara dayanan, kaynak gösteren cevabı.',
+		prompt: 'Bu dokümanlar arasında çelişen bilgi veya rakam var mı? Varsa tablo hâlinde göster.',
+		expect: 'Copilot’ın yalnızca not defterindeki kaynaklara dayanan, kaynak gösteren cevabı.',
 		tryIt: 'Kendi konunuz için bir not defteri açıp bir dosya ekleyin.',
 	},
 	{
@@ -183,14 +184,14 @@ export const TOUR_STOPS: TourStop[] = [
 	{
 		id: '9',
 		kind: 'core',
-		title: 'Araçlar · Yeni aracı',
-		where: 'Sol menü, Araçlar',
+		title: 'Aracılar · Yeni aracı',
+		where: 'Sol menü, Aracılar',
 		box: [6, 422, 248, 626],
 		badge: [224, 438],
 		what: 'Şirketinize özel hazırlanmış ajanlar, ör. Global Policy Portal Agent veya Planner Agent. Yeni aracı ile yeni bir ajan oluşturulur.',
 		when: 'Şirket politikası, iç süreç veya belirli bir sistemle ilgili sorularda genel sohbet yerine ilgili ajanı açın.',
 		how: [
-			'Araçlar listesinden ilgili ajana tıklayın.',
+			'Aracılar listesinden ilgili ajana tıklayın.',
 			'Ajanın açılış ekranındaki açıklamayı okuyun.',
 			'Sorunuzu yazın.',
 		],
@@ -220,14 +221,14 @@ export const TOUR_STOPS: TourStop[] = [
 	{
 		id: 'B',
 		kind: 'extra',
-		title: 'Diğer araçlar',
-		where: 'Sol menü, Araçlar listesinin sonu',
+		title: 'Diğer aracılar',
+		where: 'Sol menü, Aracılar listesinin sonu',
 		box: [6, 630, 248, 660],
 		badge: [216, 645],
 		what: 'Kurumunuzda kullanabileceğiniz diğer ajanları listeler.',
 		when: 'Aradığınız iş için hazır bir ajan olup olmadığını görmek istediğinizde.',
 		how: [
-			'Diğer araçlar’a tıklayın.',
+			'Diğer aracılar’a tıklayın.',
 			'Listeye göz atın veya arayın.',
 			'İhtiyacınıza uyan ajanı açın.',
 		],

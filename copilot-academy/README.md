@@ -4,7 +4,7 @@
 
 Copilot Academy, Microsoft 365 Copilot’u sıfırdan, uygulayarak öğreten Türkçe ve interaktif bir eğitim uygulamasıdır. 12 modül, 22 ders, uygulamalı laboratuvarlar, senaryolar, 15 soruluk final testi ve başarı sayfasından oluşur.
 
-> **Önemli:** Bu uygulama eğitim amaçlı, bağımsız bir **simülasyondur**. Gerçek bir Microsoft 365 hesabına bağlanmaz, e-posta göndermez, dosyalara erişmez ve Copilot API’sini çağırmaz. Tüm şirketler, kişiler, e-postalar, toplantılar ve satış verileri kurgusaldır; “Copilot yanıtları” önceden hazırlanmış örneklerdir. Uygulama Microsoft ile bağlantılı değildir ve verdiği tamamlama özeti akredite bir sertifika ya da Microsoft sertifikası değildir.
+> **Önemli:** Bu uygulama eğitim amaçlı, bağımsız bir **simülasyondur**. Gerçek bir Microsoft 365 hesabına bağlanmaz, e-posta göndermez, dosyalara erişmez ve Copilot API’sini çağırmaz. Arayüz turundaki ekran görüntüsü dışında tüm şirketler, kişiler, e-postalar, toplantılar ve satış verileri kurgusaldır (bu görüntü gerçek bir kurumun Copilot uygulamasından alınmıştır; kişisel hesap bilgileri gizlenmiştir); “Copilot yanıtları” önceden hazırlanmış örneklerdir. Uygulama Microsoft ile bağlantılı değildir ve verdiği tamamlama özeti akredite bir sertifika ya da Microsoft sertifikası değildir.
 
 ## Hızlı başlangıç
 
@@ -41,7 +41,7 @@ Eğitim tamamen tarayıcıda çalışır; kurulum, hesap veya sunucu tarafı kod
 
 | # | Modül | Öne çıkan etkileşim |
 | --- | --- | --- |
-| 1 | Copilot’a Giriş | Copilot arayüz turu (13 numaralı durak), sınıflandırma alıştırması, 15 sayfalık rapor örneği |
+| 1 | Copilot’a Giriş | Copilot arayüz turu (13 durak: 1–9 ve A–D), sınıflandırma alıştırması, 15 sayfalık rapor örneği |
 | 2 | Prompt Yazma Atölyesi | 5 bileşenli model, Prompt Builder (kopyalama dahil), zayıf/güçlü prompt karşılaştırması |
 | 3 | Copilot Chat | Çok turlu sohbet simülasyonu |
 | 4 | Word | Taslak oluşturma, 5 seçenekli yeniden yazma ve karşılaştırma |

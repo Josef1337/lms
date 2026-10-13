@@ -77,3 +77,11 @@ export const requiredTasks = (step: Step): string[] =>
 	step.blocks.map(taskIdOf).filter((id): id is string => !!id)
 
 export const allTaskIds = (steps: Step[]): string[] => steps.flatMap(requiredTasks)
+
+/**
+ * First step with a required task still open, or -1. Progress is saved as
+ * step indexes, so a step added to a lesson later shifts them; a saved index
+ * must not carry the learner past a task they have not done.
+ */
+export const firstOpenStep = (steps: Step[], isDone: (taskId: string) => boolean): number =>
+	steps.findIndex((s) => requiredTasks(s).some((id) => !isDone(id)))
