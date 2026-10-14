@@ -1,11 +1,16 @@
 <script setup lang="ts">
-import { computed, ref } from 'vue'
-import { Check, RotateCcw } from 'lucide-vue-next'
+// Pick one option (or several), then “Kontrol et”. A pick stays neutral until
+// it is checked; then the right options turn green and a wrong pick red.
+import { computed, nextTick, ref } from 'vue'
+import { RotateCcw } from 'lucide-vue-next'
 import type { ChoiceTaskBlock } from '@/types/content'
+import { seededShuffle } from '@/lib/shuffle'
 import { useProgress } from '@/stores/progress'
 import RichText from '@/components/ui/RichText.vue'
 import FeedbackNote from './FeedbackNote.vue'
+import OptionMark from './OptionMark.vue'
 import TaskCard from './TaskCard.vue'
+import { OPTION_CARD, OPTION_SR, optionState } from './optionState'
 
 const props = defineProps<{ block: ChoiceTaskBlock; label?: string }>()
 const progress = useProgress()
@@ -13,7 +18,18 @@ const progress = useProgress()
 const stored = progress.taskResult(props.block.id)
 const selected = ref<string[]>(Array.isArray(stored?.answer) ? (stored.answer as string[]) : [])
 const checked = ref(!!stored)
+const optionList = ref<HTMLElement | null>(null)
+const result = ref<HTMLElement | null>(null)
 
+// A fixed order per task, so the right answer is not always in the same
+// place. No option, feedback or explanation points at another option by
+// letter or position, so the order is free.
+const options = computed(() =>
+	seededShuffle(props.block.options, props.block.id).map((o) => ({
+		...o,
+		state: optionState(selected.value.includes(o.id), checked.value, !!o.correct),
+	}))
+)
 const correctIds = computed(() => props.block.options.filter((o) => o.correct).map((o) => o.id))
 const isCorrect = computed(
 	() =>
@@ -33,7 +49,7 @@ function pick(id: string) {
 	} else selected.value = [id]
 }
 
-function check() {
+async function check() {
 	if (!selected.value.length) return
 	checked.value = true
 	const hits = selected.value.filter((id) => correctIds.value.includes(id)).length
@@ -43,19 +59,17 @@ function check() {
 		score: Math.max(0, (hits - wrong) / correctIds.value.length),
 		answer: [...selected.value],
 	})
+	// The pressed button gives way to “Tekrar dene”; the feedback takes the focus.
+	await nextTick()
+	result.value?.focus()
 }
 
-function retry() {
+async function retry() {
 	checked.value = false
 	selected.value = []
-}
-
-function optionClass(id: string, correct?: boolean) {
-	const isSelected = selected.value.includes(id)
-	if (!checked.value) return isSelected ? 'border-brand-500 bg-brand-50 ring-1 ring-brand-500' : ''
-	if (correct) return 'border-success-600/60 bg-success-50'
-	if (isSelected) return 'border-danger-600/50 bg-danger-50'
-	return 'opacity-70'
+	// “Tekrar dene” goes away and “Kontrol et” waits for a pick: start there.
+	await nextTick()
+	optionList.value?.querySelector<HTMLElement>('button')?.focus()
 }
 </script>
 
@@ -65,6 +79,7 @@ function optionClass(id: string, correct?: boolean) {
 		:prompt="block.prompt"
 		:label="label"
 		:done="progress.isTaskDone(block.id)"
+		:correct="progress.taskResult(block.id)?.correct"
 	>
 		<RichText
 			v-if="block.context"
@@ -75,39 +90,24 @@ function optionClass(id: string, correct?: boolean) {
 		<p class="mb-2 text-xs font-medium text-ink-500">
 			{{ block.multiple ? 'Uygun olanların hepsini seçin.' : 'Bir seçenek seçin.' }}
 		</p>
-		<div :role="block.multiple ? 'group' : 'radiogroup'" class="space-y-2">
+		<div ref="optionList" :role="block.multiple ? 'group' : 'radiogroup'" class="space-y-2">
 			<button
-				v-for="option in block.options"
+				v-for="option in options"
 				:key="option.id"
 				type="button"
 				:role="block.multiple ? 'checkbox' : 'radio'"
 				:aria-checked="selected.includes(option.id)"
 				:aria-disabled="checked"
-				:class="[
-					'option-card',
-					optionClass(option.id, option.correct),
-					checked && 'cursor-default',
-				]"
+				:data-state="option.state"
+				:class="['option-card', OPTION_CARD[option.state], checked && 'cursor-default']"
 				@click="pick(option.id)"
 			>
-				<span
-					:class="[
-						'mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center border-2 transition',
-						block.multiple ? 'rounded-md' : 'rounded-full',
-						!selected.includes(option.id)
-							? 'border-ink-300 bg-white'
-							: !checked
-							? 'border-brand-600 bg-brand-600 text-white'
-							: option.correct
-							? 'border-success-600 bg-success-600 text-white'
-							: 'border-danger-600 bg-danger-600 text-white',
-					]"
-					aria-hidden="true"
-				>
-					<Check v-if="selected.includes(option.id)" :size="12" :stroke-width="3.5" />
-				</span>
+				<OptionMark :state="option.state" :multiple="block.multiple" />
 				<span class="min-w-0 flex-1">
 					<RichText :text="option.text" />
+					<span v-if="OPTION_SR[option.state]" class="sr-only"
+						>, {{ OPTION_SR[option.state] }}</span
+					>
 					<RichText
 						v-if="checked && (selected.includes(option.id) || option.correct)"
 						as="span"
@@ -120,7 +120,7 @@ function optionClass(id: string, correct?: boolean) {
 				</span>
 			</button>
 		</div>
-		<div v-if="checked" class="mt-4">
+		<div v-if="checked" ref="result" tabindex="-1" class="mt-4 rounded-xl">
 			<FeedbackNote
 				:tone="isCorrect ? 'correct' : partial ? 'partial' : 'incorrect'"
 				:body="block.explanation"

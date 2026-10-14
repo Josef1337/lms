@@ -60,7 +60,12 @@ const categoryLabel = (id: string) => props.block.categories.find((c) => c.id ==
 </script>
 
 <template>
-	<TaskCard data-task="classify" :prompt="block.prompt" :done="progress.isTaskDone(block.id)">
+	<TaskCard
+		data-task="classify"
+		:prompt="block.prompt"
+		:done="progress.isTaskDone(block.id)"
+		:correct="progress.taskResult(block.id)?.correct"
+	>
 		<div class="mb-4 grid gap-2 sm:grid-cols-3">
 			<div
 				v-for="cat in block.categories"

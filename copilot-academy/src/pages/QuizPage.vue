@@ -132,10 +132,10 @@ function optionState(optionId: string) {
 
 const OPTION_CLASS = {
 	idle: '',
-	selected: 'border-brand-500 bg-brand-50 ring-1 ring-brand-500',
-	correct: 'border-success-600/60 bg-success-50',
-	wrong: 'border-danger-600/50 bg-danger-50',
-	muted: 'opacity-60',
+	selected: 'option-card-selected',
+	correct: 'option-card-correct',
+	wrong: 'option-card-wrong',
+	muted: 'option-card-muted',
 }
 const LETTERS = ['A', 'B', 'C', 'D', 'E']
 </script>
@@ -350,7 +350,7 @@ const LETTERS = ['A', 'B', 'C', 'D', 'E']
 									: optionState(o.id) === 'wrong'
 									? 'bg-danger-600 text-white'
 									: optionState(o.id) === 'selected'
-									? 'bg-brand-600 text-white'
+									? 'bg-ink-900 text-white forced-colors:bg-[Highlight] forced-colors:text-[HighlightText]'
 									: 'bg-ink-100 text-ink-600',
 							]"
 							aria-hidden="true"

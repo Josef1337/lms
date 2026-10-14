@@ -58,7 +58,12 @@ function lineClass(id: string, flawed?: boolean) {
 </script>
 
 <template>
-	<TaskCard data-task="spot" :prompt="block.prompt" :done="progress.isTaskDone(block.id)">
+	<TaskCard
+		data-task="spot"
+		:prompt="block.prompt"
+		:done="progress.isTaskDone(block.id)"
+		:correct="progress.taskResult(block.id)?.correct"
+	>
 		<div :class="['grid gap-4', block.reference && 'lg:grid-cols-2']">
 			<section v-if="block.reference" class="rounded-xl border border-ink-200 bg-ink-50/70 p-4">
 				<p class="eyebrow mb-2">{{ block.reference.title }}</p>

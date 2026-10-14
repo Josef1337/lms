@@ -51,6 +51,7 @@ function choose(optionId: string) {
 		data-task="cases"
 		:prompt="block.prompt ?? 'Her olayda en doğru davranışı seçin.'"
 		:done="progress.isTaskDone(block.id)"
+		:correct="progress.taskResult(block.id)?.correct"
 	>
 		<div class="mb-4 flex items-center gap-2" role="tablist" aria-label="Olaylar">
 			<button

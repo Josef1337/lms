@@ -47,7 +47,12 @@ function retry() {
 </script>
 
 <template>
-	<TaskCard data-task="order" :prompt="block.prompt" :done="progress.isTaskDone(block.id)">
+	<TaskCard
+		data-task="order"
+		:prompt="block.prompt"
+		:done="progress.isTaskDone(block.id)"
+		:correct="progress.taskResult(block.id)?.correct"
+	>
 		<p class="mb-3 text-xs font-medium text-ink-500">
 			Okları kullanarak öğeleri doğru sıraya getirin.
 		</p>

@@ -98,12 +98,40 @@
 		@apply flex w-full items-start gap-3 rounded-xl border border-ink-200 bg-white px-4 py-3 text-start text-[15px] text-ink-800 transition duration-150;
 	}
 
+	/* Answer states, shared by choice tasks, question sets and the final quiz.
+	   A pick that has not been checked yet is neutral graphite, so red never
+	   means “selected”: only a checked answer turns green (correct) or red
+	   (wrong). The inset shadow thickens the border without moving the text
+	   and leaves the red focus ring free to stand out on its own. */
+	.option-card-selected {
+		@apply border-ink-800 bg-ink-50 shadow-[inset_0_0_0_1px_theme(colors.ink.800)];
+	}
+	.option-card-correct {
+		@apply border-success-600/60 bg-success-50;
+	}
+	.option-card-wrong {
+		@apply border-danger-600/50 bg-danger-50;
+	}
+	/* Options left out of the answer; 70% keeps their text above 4.5:1. */
+	.option-card-muted {
+		@apply opacity-70;
+	}
+
+	/* High contrast drops the fill and the shadow; the system highlight
+	   colour keeps the picked option apart from the rest. */
+	@media (forced-colors: active) {
+		.option-card-selected {
+			border-color: Highlight;
+		}
+	}
+
 	/* Hover only on options still open to a choice, so it never repaints a
-	   picked, correct or wrong option (those are aria-checked or disabled). */
+	   picked, correct or wrong option (those are aria-checked or disabled).
+	   Neutral grey, like the pick itself. */
 	@media (hover: hover) and (pointer: fine) {
 		.option-card:not([aria-checked='true']):not(:disabled):not([aria-disabled='true']):hover {
-			border-color: theme('colors.brand.300');
-			background-color: rgb(253 236 236 / 0.4);
+			border-color: theme('colors.ink.400');
+			background-color: theme('colors.ink.50');
 		}
 	}
 

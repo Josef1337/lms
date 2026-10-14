@@ -1,11 +1,19 @@
 <script setup lang="ts">
-import { CircleCheck, PenLine } from 'lucide-vue-next'
+import { CircleCheck, CircleDot, PenLine } from 'lucide-vue-next'
 import RichText from '@/components/ui/RichText.vue'
 
-withDefaults(defineProps<{ prompt?: string; label?: string; done?: boolean }>(), {
-	label: 'Görev',
-	done: false,
-})
+// `correct` is the stored result of the task. A task that was answered but
+// not fully right reads “Yanıtlandı”, so the header never says “Tamamlandı”
+// next to a “Tam olarak değil” feedback. Its default is `undefined` because
+// Vue would turn a missing boolean prop into `false`, i.e. a wrong answer.
+withDefaults(
+	defineProps<{ prompt?: string; label?: string; done?: boolean; correct?: boolean }>(),
+	{
+		label: 'Görev',
+		done: false,
+		correct: undefined,
+	}
+)
 </script>
 
 <template>
@@ -24,7 +32,16 @@ withDefaults(defineProps<{ prompt?: string; label?: string; done?: boolean }>(),
 					class="flex items-center gap-2 text-[11px] font-bold uppercase tracking-[0.08em] text-warning-700"
 				>
 					{{ label }}
-					<span v-if="done" class="chip bg-success-50 normal-case tracking-normal text-success-700">
+					<span
+						v-if="done && correct === false"
+						class="chip bg-ink-100 normal-case tracking-normal text-ink-700"
+					>
+						<CircleDot :size="12" aria-hidden="true" /> Yanıtlandı
+					</span>
+					<span
+						v-else-if="done"
+						class="chip bg-success-50 normal-case tracking-normal text-success-700"
+					>
 						<CircleCheck :size="12" aria-hidden="true" /> Tamamlandı
 					</span>
 				</p>
