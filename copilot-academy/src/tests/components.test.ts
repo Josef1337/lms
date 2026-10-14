@@ -6,6 +6,7 @@ import ClassifyTask from '@/components/tasks/ClassifyTask.vue'
 import QuestionSet from '@/components/tasks/QuestionSet.vue'
 import TaskCard from '@/components/tasks/TaskCard.vue'
 import PromptBuilder from '@/components/interactive/PromptBuilder.vue'
+import BrandText from '@/components/ui/BrandText.vue'
 import { PROMPT_EXAMPLES, buildPrompt } from '@/lib/promptBuilder'
 import { seededShuffle } from '@/lib/shuffle'
 import { useProgress } from '@/stores/progress'
@@ -256,10 +257,8 @@ describe('PromptBuilder', () => {
 		expect(writeText).toHaveBeenCalledWith(buildPrompt(example.fields))
 		expect(wrapper.text()).toContain('Kopyalandı')
 
-		await wrapper
-			.findAll('button')
-			.find((b) => b.text().includes('Görevi Tamamla'))!
-			.trigger('click')
+		// Every goal is met, so the task completed itself (no separate button).
+		expect(wrapper.text()).toContain('Görev tamamlandı')
 		expect(useProgress().taskResult('pb-task')).toMatchObject({ correct: true, score: 1 })
 		// Only coverage is stored, never the typed text.
 		expect(JSON.stringify(useProgress().taskResult('pb-task'))).not.toContain(example.fields.task)
@@ -269,5 +268,14 @@ describe('PromptBuilder', () => {
 			.find((b) => b.text().includes('Alanları temizle'))!
 			.trigger('click')
 		expect(wrapper.text()).toContain('Prompt’unuz burada oluşacak')
+	})
+})
+
+describe('BrandText', () => {
+	it('marks English brand names so uppercase labels keep their dotless I', () => {
+		const wrapper = mount(BrandText, { props: { text: 'Copilot’a Giriş · PowerPoint' } })
+		expect(wrapper.html({ raw: true })).toBe(
+			'<span lang="en">Copilot</span>’a Giriş · <span lang="en">PowerPoint</span>'
+		)
 	})
 })

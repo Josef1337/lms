@@ -231,9 +231,9 @@ describe('Excel lab', () => {
 			'Yönetici için üç önemli bulgu',
 		])
 			await pick(w, label)
-		const finish = w.findAll('button').find((b) => b.text().includes('Görevi Tamamla'))!
-		expect(finish.attributes('disabled')).toBeUndefined()
-		await finish.trigger('click')
+		// The goals are met, so the task completed itself (no separate button).
+		await flushPromises()
+		expect(w.text()).toContain('Görev tamamlandı')
 		expect(useProgress().taskResult('excel-lab-test')).toMatchObject({
 			correct: true,
 			answer: ['regions', 'products', 'insights'],

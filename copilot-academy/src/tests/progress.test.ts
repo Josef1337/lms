@@ -166,8 +166,8 @@ describe('lab state', () => {
 	it('keeps the report explorer’s prompts and pages across a reload, before completion', async () => {
 		const first = mount(ReportExplorer, { props: { taskId: 'rapor' } })
 		const prompts = first.findAll('button[aria-pressed]').filter((b) => !/^\s*\d/.test(b.text()))
+		// One prompt and one page: the goals (two prompts, one page) are not met yet.
 		await prompts[0].trigger('click')
-		await prompts[1].trigger('click')
 		await first
 			.findAll('button[aria-pressed]')
 			.find((b) => /^\s*4\b/.test(b.text()))!
@@ -176,14 +176,20 @@ describe('lab state', () => {
 		first.unmount()
 		const p = useProgress()
 		expect(p.isTaskDone('rapor')).toBe(false)
-		expect(p.labState('rapor')).toEqual({ asked: ['ozet', 'kararlar'], opened: [4] })
+		expect(p.labState('rapor')).toEqual({ asked: ['ozet'], opened: [4] })
 		// Only ids of the ready-made prompts are kept, never their text.
 		expect(JSON.stringify(p.labState('rapor'))).not.toMatch(/\s/)
 
 		setActivePinia(createPinia())
 		const again = mount(ReportExplorer, { props: { taskId: 'rapor' } })
-		const finish = again.findAll('button').find((b) => b.text().includes('Görevi Tamamla'))!
-		expect(finish.attributes('disabled')).toBeUndefined()
+		// The restored prompt counts: one more completes the task by itself.
+		await again
+			.findAll('button[aria-pressed]')
+			.filter((b) => !/^\s*\d/.test(b.text()))[1]
+			.trigger('click')
+		await nextTick()
+		expect(useProgress().isTaskDone('rapor')).toBe(true)
+		expect(useProgress().labState('rapor')).toEqual({ asked: ['ozet', 'kararlar'], opened: [4] })
 		again.unmount()
 	})
 })
