@@ -8,11 +8,13 @@ import ProgressBar from '@/components/ui/ProgressBar.vue'
 defineProps<{
 	to: RouteLocationRaw
 	visual: Visual
-	number: number
+	/** Module number for the "Modül N" label; cards that are not modules pass `eyebrow`. */
+	number?: number
+	eyebrow?: string
 	title: string
 	tagline: string
 	meta: string
-	minutes: number
+	minutes?: number
 	percent: number
 	state: 'not-started' | 'in-progress' | 'completed'
 	stateLabel?: string
@@ -38,15 +40,15 @@ defineProps<{
 			>
 				{{ stateLabel ?? 'Devam ediyor' }}
 			</span>
-			<span v-else class="text-[11px] font-semibold uppercase tracking-wide text-ink-500"
-				>Modül {{ number }}</span
-			>
+			<span v-else class="text-[11px] font-semibold uppercase tracking-wide text-ink-500">{{
+				eyebrow ?? `Modül ${number}`
+			}}</span>
 		</div>
 		<p
 			v-if="state !== 'not-started'"
 			class="mt-3 text-[11px] font-semibold uppercase tracking-wide text-ink-500"
 		>
-			Modül {{ number }}
+			{{ eyebrow ?? `Modül ${number}` }}
 		</p>
 		<h3
 			:class="[
@@ -60,7 +62,7 @@ defineProps<{
 		<div class="mt-auto pt-4">
 			<div class="mb-1.5 flex items-center justify-between text-[12px] text-ink-500">
 				<span>{{ meta }}</span>
-				<span class="flex items-center gap-1"
+				<span v-if="minutes" class="flex items-center gap-1"
 					><Clock :size="12" aria-hidden="true" /> {{ minutes }} dk</span
 				>
 			</div>

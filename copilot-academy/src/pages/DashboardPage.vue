@@ -308,7 +308,7 @@ function reset() {
 						<ModuleCard
 							:to="{ name: 'quiz' }"
 							visual="quiz"
-							:number="QUIZ.number"
+							eyebrow="Modüllerden sonra"
 							:title="QUIZ.navLabel"
 							:tagline="`${QUIZ_QUESTIONS.length} soru · geçme puanı %80`"
 							:meta="
@@ -328,11 +328,10 @@ function reset() {
 						<ModuleCard
 							:to="{ name: 'achievements' }"
 							visual="trophy"
-							:number="GRADUATION.number"
+							eyebrow="Tamamlama"
 							:title="GRADUATION.navLabel"
 							tagline="Rozetler, tamamlanan modüller ve eğitim tamamlama özeti"
 							:meta="`Genel ilerleme %${progress.overall.percent}`"
-							:minutes="GRADUATION.minutes"
 							:percent="progress.overall.percent"
 							:state="
 								progress.overall.percent === 100

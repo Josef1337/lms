@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import type { ComparisonBlock } from '@/types/content'
 import Icon from '@/components/ui/Icon.vue'
+import BrandText from '@/components/ui/BrandText.vue'
 import RichText from '@/components/ui/RichText.vue'
 
 defineProps<{ block: ComparisonBlock }>()
@@ -76,7 +77,7 @@ defineProps<{ block: ComparisonBlock }>()
 				<dl class="space-y-2 text-sm">
 					<div v-for="row in block.rows" :key="row.label">
 						<dt class="text-xs font-semibold uppercase tracking-wide text-ink-500">
-							{{ row.label }}
+							<BrandText :text="row.label" />
 						</dt>
 						<dd class="text-ink-700"><RichText :text="row.values[ci]" /></dd>
 					</div>

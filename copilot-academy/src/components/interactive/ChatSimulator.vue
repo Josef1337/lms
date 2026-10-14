@@ -163,7 +163,7 @@ function complete() {
 									class="min-w-0 flex-1 rounded-2xl rounded-ss-md border border-ink-200 bg-white px-4 py-3 text-[14px] leading-relaxed text-ink-700 shadow-card"
 								>
 									<p class="mb-1 text-[11px] font-semibold uppercase tracking-wide text-iris-700">
-										Copilot · simüle edilmiş yanıt
+										<span lang="en">Copilot</span> · simüle edilmiş yanıt
 									</p>
 									<p v-if="h.option.response.text">{{ h.option.response.text }}</p>
 									<ul v-if="h.option.response.bullets" class="space-y-1">

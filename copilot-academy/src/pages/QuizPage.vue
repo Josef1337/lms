@@ -36,6 +36,7 @@ const resultAttempt = ref<QuizAttempt | null>(null)
 const newBadges = ref<string[]>([])
 const openExplanations = ref<Set<string>>(new Set())
 const heading = ref<HTMLElement | null>(null)
+const actions = ref<HTMLElement | null>(null)
 
 const total = QUIZ_QUESTIONS.length
 const passCount = Math.ceil(total * PASS_RATIO)
@@ -63,7 +64,8 @@ const score = computed(() =>
 async function focusHeading() {
 	await nextTick()
 	heading.value?.focus({ preventScroll: true })
-	window.scrollTo({ top: 0, behavior: 'smooth' })
+	const reduce = window.matchMedia?.('(prefers-reduced-motion: reduce)').matches
+	window.scrollTo({ top: 0, behavior: reduce ? 'auto' : 'smooth' })
 }
 
 function begin(fresh: boolean) {
@@ -77,10 +79,15 @@ function begin(fresh: boolean) {
 	focusHeading()
 }
 
-function check() {
+async function check() {
 	if (!selection.value || answered.value) return
+	const hadFocus = !!actions.value?.contains(document.activeElement)
 	answers.value = { ...answers.value, [question.value.id]: selection.value }
 	progress.saveQuizDraft({ answers: answers.value, index: index.value })
+	// The check button gives way to "Sonraki soru"; keep keyboard focus on it.
+	await nextTick()
+	if (hadFocus)
+		actions.value?.querySelector<HTMLButtonElement>('.btn-primary, .btn-accent')?.focus()
 }
 
 function goTo(i: number) {
@@ -154,7 +161,7 @@ const LETTERS = ['A', 'B', 'C', 'D', 'E']
 				<div class="relative">
 					<div class="flex items-center gap-3">
 						<AppTile visual="quiz" size="lg" />
-						<p class="eyebrow">Modül {{ QUIZ.number }} / 12</p>
+						<p class="eyebrow">Modüllerden sonra · Final testi</p>
 					</div>
 					<h1
 						ref="heading"
@@ -387,6 +394,7 @@ const LETTERS = ['A', 'B', 'C', 'D', 'E']
 				</div>
 
 				<div
+					ref="actions"
 					class="mt-6 flex flex-wrap items-center justify-between gap-3 border-t border-ink-100 pt-5"
 				>
 					<button

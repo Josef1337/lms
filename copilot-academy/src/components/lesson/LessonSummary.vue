@@ -155,7 +155,7 @@ const moduleDone = computed(
 			<template v-else>
 				<AppTile visual="quiz" size="lg" />
 				<div class="min-w-0 flex-1">
-					<p class="eyebrow">Sıradaki adım · Modül 11</p>
+					<p class="eyebrow">Sıradaki adım · Final testi</p>
 					<p class="mt-0.5 text-[16px] font-semibold text-ink-900">Final Bilgi Testi</p>
 					<p class="mt-0.5 text-[13px] text-ink-500">
 						Bütün dersleri bitirdiniz. Şimdi öğrendiklerinizi ölçme zamanı.

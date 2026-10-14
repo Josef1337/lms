@@ -161,7 +161,7 @@ function complete() {
 							class="rounded-2xl rounded-ss-md border border-ink-200 bg-white px-4 py-3 shadow-card"
 						>
 							<p class="mb-1.5 text-[11px] font-semibold uppercase tracking-wide text-iris-700">
-								Copilot · örnek yanıt
+								<span lang="en">Copilot</span> · örnek yanıt
 							</p>
 							<ul class="space-y-2 text-[14px] leading-relaxed text-ink-700" role="list">
 								<li v-for="(line, i) in active.lines" :key="i" class="flex gap-2">

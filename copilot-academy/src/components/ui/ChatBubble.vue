@@ -34,7 +34,7 @@ defineProps<{ message: ChatMessage; dark?: boolean }>()
 					dark ? 'text-iris-300' : 'text-iris-700',
 				]"
 			>
-				Copilot
+				<span lang="en">Copilot</span>
 				<span class="font-medium normal-case tracking-normal opacity-70">· örnek yanıt</span>
 			</p>
 			<p

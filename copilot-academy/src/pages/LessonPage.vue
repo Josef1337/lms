@@ -20,6 +20,7 @@ import {
 	type StepPhase,
 } from '@/components/lesson/phases'
 import AppTile from '@/components/ui/AppTile.vue'
+import BrandText from '@/components/ui/BrandText.vue'
 import ProgressBar from '@/components/ui/ProgressBar.vue'
 
 const route = useRoute()
@@ -174,9 +175,8 @@ function continueOn() {
 					<AppTile :visual="module.visual" size="md" />
 					<div class="min-w-0">
 						<p class="eyebrow">
-							Modül {{ module.number }} · {{ module.navLabel }} · Ders {{ lessonNumber }}/{{
-								module.lessons.length
-							}}
+							Modül {{ module.number }} · <BrandText :text="module.navLabel" /> · Ders
+							{{ lessonNumber }}/{{ module.lessons.length }}
 						</p>
 						<h1 class="text-[21px] font-bold leading-tight text-balance sm:truncate sm:text-[26px]">
 							{{ lesson.title }}

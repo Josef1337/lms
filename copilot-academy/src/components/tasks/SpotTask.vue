@@ -6,6 +6,7 @@ import { Flag, RotateCcw } from 'lucide-vue-next'
 import type { SpotTaskBlock } from '@/types/content'
 import { useProgress } from '@/stores/progress'
 import AppFrame from '@/components/ui/AppFrame.vue'
+import BrandText from '@/components/ui/BrandText.vue'
 import RichText from '@/components/ui/RichText.vue'
 import FeedbackNote from './FeedbackNote.vue'
 import TaskCard from './TaskCard.vue'
@@ -66,7 +67,7 @@ function lineClass(id: string, flawed?: boolean) {
 	>
 		<div :class="['grid gap-4', block.reference && 'lg:grid-cols-2']">
 			<section v-if="block.reference" class="rounded-xl border border-ink-200 bg-ink-50/70 p-4">
-				<p class="eyebrow mb-2">{{ block.reference.title }}</p>
+				<p class="eyebrow mb-2"><BrandText :text="block.reference.title" /></p>
 				<ul class="space-y-1.5 text-[13px] leading-relaxed text-ink-700">
 					<li v-for="(line, i) in block.reference.lines" :key="i"><RichText :text="line" /></li>
 				</ul>

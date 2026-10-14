@@ -161,7 +161,7 @@ const prompting: Module = {
 							type: 'reveal',
 							surface: 'copilot',
 							intro:
-								'Aynı isteği adım adım güçlendirelim. Her adımda prompt’a bir bileşen ekleniyor; olası sonucun nasıl değiştiğine bakın.',
+								'Aynı isteği aşama aşama güçlendirelim. Her aşamada prompt’a bir bileşen ekleniyor; olası sonucun nasıl değiştiğine bakın.',
 							steps: [
 								{
 									title: 'Başlangıç: yalnızca bir istek',

@@ -3,6 +3,7 @@ import { ref } from 'vue'
 import { ArrowRight, Check } from 'lucide-vue-next'
 import type { BeforeAfterBlock } from '@/types/content'
 import DraftText from '@/components/ui/DraftText.vue'
+import BrandText from '@/components/ui/BrandText.vue'
 import RichText from '@/components/ui/RichText.vue'
 
 defineProps<{ block: BeforeAfterBlock }>()
@@ -37,7 +38,7 @@ const view = ref<'before' | 'after'>('after')
 					view === 'after' && 'hidden md:block',
 				]"
 			>
-				<p class="eyebrow mb-2">{{ block.before.label }}</p>
+				<p class="eyebrow mb-2"><BrandText :text="block.before.label" /></p>
 				<DraftText
 					as="p"
 					:text="block.before.text"
@@ -57,7 +58,7 @@ const view = ref<'before' | 'after'>('after')
 					view === 'before' && 'hidden md:block',
 				]"
 			>
-				<p class="eyebrow mb-2 !text-success-700">{{ block.after.label }}</p>
+				<p class="eyebrow mb-2 !text-success-700"><BrandText :text="block.after.label" /></p>
 				<DraftText
 					as="p"
 					:text="block.after.text"

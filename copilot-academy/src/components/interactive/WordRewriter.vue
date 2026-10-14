@@ -7,6 +7,7 @@ import AppFrame from '@/components/ui/AppFrame.vue'
 import RichText from '@/components/ui/RichText.vue'
 import SimNotice from '@/components/ui/SimNotice.vue'
 import TaskGoal from './TaskGoal.vue'
+import BrandText from '@/components/ui/BrandText.vue'
 import CopilotMark from '@/components/ui/CopilotMark.vue'
 
 const props = defineProps<{ taskId?: string }>()
@@ -136,7 +137,8 @@ const VIEWS: { id: View; label: string }[] = [
 							<p
 								class="mb-2 flex items-center gap-1.5 text-[11px] font-bold uppercase tracking-[0.08em] text-app-word"
 							>
-								<CopilotMark :size="14" /> Copilot önerisi · {{ active.label }}
+								<CopilotMark :size="14" /> <span lang="en">Copilot</span> önerisi ·
+								<BrandText :text="active.label" />
 							</p>
 							<div
 								v-if="active.paragraphs"

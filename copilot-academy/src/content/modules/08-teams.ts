@@ -363,7 +363,7 @@ const teams: Module = {
 							type: 'reveal',
 							surface: 'teams',
 							intro:
-								'Birkaç toplantının notları biriktiğinde Copilot, tekrar eden konuları ve kararları düzenlemenize yardımcı olabilir. Adımları izleyin.',
+								'Birkaç toplantının notları biriktiğinde Copilot, tekrar eden konuları ve kararları düzenlemenize yardımcı olabilir. Aşamaları sırayla izleyin.',
 							steps: [
 								{
 									title: 'Tekrar eden konular',
