@@ -168,8 +168,9 @@ export const BADGES: BadgeDef[] = [
 		earned: (ctx) => ctx.bestQuizRatio === 1,
 	},
 	{
+		// The id predates the title and stays: saved progress refers to it.
 		id: 'akademi-mezunu',
-		title: 'Akademi Mezunu',
+		title: 'Eğitimi Tamamladı',
 		description: 'Bütün modülleri tamamladınız ve final testini geçtiniz.',
 		hint: 'Tüm dersleri tamamlayın ve final testini geçin.',
 		icon: 'graduation',

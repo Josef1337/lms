@@ -1,16 +1,17 @@
 <script setup lang="ts">
-import { computed, ref } from 'vue'
+import { computed, onBeforeUnmount, onMounted, ref } from 'vue'
 import { RouterLink } from 'vue-router'
 import {
 	ArrowRight,
 	CircleCheck,
 	CircleDashed,
+	ClipboardList,
 	Info,
 	Printer,
 	Sparkles,
 	TrendingUp,
 } from 'lucide-vue-next'
-import { MODULES, QUIZ, SKILLS, getModule } from '@/content'
+import { GRADUATION, LESSON_REFS, MODULES, QUIZ, SKILLS, getModule } from '@/content'
 import { BADGES } from '@/content/badges'
 import { QUIZ_QUESTIONS } from '@/content/quiz'
 import { allTaskIds } from '@/components/lesson/phases'
@@ -19,7 +20,6 @@ import { scoreQuiz } from '@/lib/quizScoring'
 import { useProgress } from '@/stores/progress'
 import type { SkillKey } from '@/types/content'
 import BadgeGrid from '@/components/dashboard/BadgeGrid.vue'
-import BrandMark from '@/components/layout/BrandMark.vue'
 import AppTile from '@/components/ui/AppTile.vue'
 import ProgressRing from '@/components/ui/ProgressRing.vue'
 
@@ -92,7 +92,7 @@ const nextSteps = computed(() => {
 		else if (t.kind === 'quiz')
 			steps.push({
 				title: 'Final testini geçin',
-				text: 'Bütün dersleri bitirdiniz; %80 ile testi geçerek mezun olun.',
+				text: 'Bütün dersleri bitirdiniz; %80 ile testi geçerek eğitimi tamamlayın.',
 			})
 	}
 	steps.push(
@@ -116,11 +116,41 @@ const nextSteps = computed(() => {
 	return steps
 })
 
-const today = new Date().toISOString()
-
 // Embedded viewers cannot open the print dialog; builds for them set
 // VITE_ALLOW_PRINT=false (see .env.embed) and the button is left out.
 const canPrint = import.meta.env.VITE_ALLOW_PRINT !== 'false'
+
+// The day the summary is printed, refreshed when printing starts (the button
+// or the browser menu), since the page may have been open since yesterday.
+const printedAt = ref(new Date().toISOString())
+const stampPrint = () => (printedAt.value = new Date().toISOString())
+onMounted(() => window.addEventListener('beforeprint', stampPrint))
+onBeforeUnmount(() => window.removeEventListener('beforeprint', stampPrint))
+
+/** ISO timestamps sort as text, so the last one is the latest. */
+const latest = (stamps: (string | undefined)[]) =>
+	stamps
+		.filter((at): at is string => !!at)
+		.sort()
+		.pop()
+
+/**
+ * The course's own date, from saved progress rather than the clock. Once every
+ * module and the test are done it is the moment the later of the two happened:
+ * the last lesson completed or the first passing test. Before that it is the
+ * latest progress saved, so an interim summary is never dated as finished.
+ */
+const progressDate = computed<{ label: string; at?: string }>(() => {
+	const lessons = LESSON_REFS.map((r) => progress.data.lessons[r.lesson.id]?.completedAt)
+	const attempts = progress.data.quiz.attempts
+	if (graduated.value)
+		return {
+			label: 'Tamamlanma tarihi',
+			at: latest([...lessons, attempts.find((a) => a.passed)?.at]),
+		}
+	const at = latest([...lessons, ...attempts.map((a) => a.at)])
+	return { label: at ? 'Son kaydedilen ilerleme' : 'Tamamlanma tarihi', at }
+})
 
 function print() {
 	window.print()
@@ -130,8 +160,8 @@ function print() {
 <template>
 	<div class="mx-auto max-w-[1240px] px-4 pb-16 pt-6 sm:px-6 sm:pt-8 lg:px-8">
 		<header class="no-print flex flex-col gap-1">
-			<p class="eyebrow">Modül 12 / 12</p>
-			<h1 class="text-[28px] font-bold leading-tight sm:text-[32px]">Mezuniyet ve Başarılarım</h1>
+			<p class="eyebrow">Eğitimin sonunda</p>
+			<h1 class="text-[28px] font-bold leading-tight sm:text-[32px]">{{ GRADUATION.title }}</h1>
 			<p class="text-[15px] text-ink-600">
 				Gelişiminizi, rozetlerinizi ve eğitim tamamlama özetinizi burada görebilirsiniz.
 			</p>
@@ -336,16 +366,38 @@ function print() {
 				<section
 					class="print-area overflow-hidden rounded-3xl border border-ink-200 bg-white shadow-raised"
 					aria-labelledby="summary-title"
+					aria-describedby="summary-disclaimer"
 				>
-					<div class="bg-brand-gradient px-6 py-5 text-white">
-						<div class="rounded-xl bg-white/95 px-3 py-2 shadow-card inline-flex">
-							<BrandMark />
+					<!-- Deliberately plain: no brand colour or product logo, and what the
+					     page is not comes right under its title, so a printout cannot pass
+					     for a certificate. -->
+					<div class="border-b border-ink-200 bg-ink-50 px-6 py-5">
+						<div class="flex items-center gap-3">
+							<span
+								class="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-white text-ink-600 ring-1 ring-inset ring-ink-200"
+							>
+								<ClipboardList :size="20" aria-hidden="true" />
+							</span>
+							<h2 id="summary-title" class="text-[20px] font-bold leading-tight text-ink-900">
+								Copilot Academy Eğitim Tamamlama Özeti
+							</h2>
 						</div>
-						<h2 id="summary-title" class="mt-4 text-[20px] font-bold leading-tight text-white">
-							Copilot Academy Eğitim Tamamlama Özeti
-						</h2>
-						<p class="mt-1 text-[13px] text-white">
-							{{ graduated ? 'Eğitim tamamlandı' : 'Ara özet · eğitim devam ediyor' }}
+						<p
+							id="summary-disclaimer"
+							class="mt-3 text-[14px] font-medium leading-snug text-ink-800"
+						>
+							Kendi kendine tamamlanan eğitim simülasyonu özeti; sertifika veya resmî kayıt
+							değildir.
+						</p>
+						<p class="mt-1 text-[14px] leading-snug text-ink-700">
+							Bu tarayıcıda kaydedilen ilerlemeye dayanır, doğrulanmamıştır.
+						</p>
+						<p class="mt-3 text-[13px] font-semibold text-ink-600">
+							{{
+								graduated
+									? `${MODULES.length} modül ve final testi tamamlandı`
+									: 'Ara özet · eğitim devam ediyor'
+							}}
 						</p>
 					</div>
 					<div class="space-y-4 px-6 py-5">
@@ -378,18 +430,18 @@ function print() {
 								</dd>
 							</div>
 							<div>
-								<dt class="text-ink-500">Tarih</dt>
-								<dd class="font-semibold text-ink-900">{{ formatDate(today) }}</dd>
+								<dt class="text-ink-500">{{ canPrint ? 'Yazdırma tarihi' : 'Özet tarihi' }}</dt>
+								<dd class="font-semibold text-ink-900">{{ formatDate(printedAt) }}</dd>
 							</div>
 							<div>
-								<dt class="text-ink-500">Tamamlanma</dt>
-								<dd class="font-semibold text-ink-900">%{{ progress.overall.percent }}</dd>
-							</div>
-							<div>
-								<dt class="text-ink-500">Modüller</dt>
+								<dt class="text-ink-500">{{ progressDate.label }}</dt>
 								<dd class="font-semibold text-ink-900">
-									{{ progress.overall.modulesDone }}/{{ MODULES.length }} ders modülü
+									{{ progressDate.at ? formatDate(progressDate.at) : 'Henüz tamamlanmadı' }}
 								</dd>
+							</div>
+							<div>
+								<dt class="text-ink-500">Genel ilerleme</dt>
+								<dd class="font-semibold text-ink-900">%{{ progress.overall.percent }}</dd>
 							</div>
 							<div>
 								<dt class="text-ink-500">Final testi</dt>
@@ -399,6 +451,18 @@ function print() {
 											? `${best.correct}/${best.total} (%${Math.round(best.ratio * 100)})`
 											: 'Çözülmedi'
 									}}
+								</dd>
+							</div>
+							<div>
+								<dt class="text-ink-500">Modüller</dt>
+								<dd class="font-semibold text-ink-900">
+									{{ progress.overall.modulesDone }}/{{ MODULES.length }} modül
+								</dd>
+							</div>
+							<div>
+								<dt class="text-ink-500">Dersler</dt>
+								<dd class="font-semibold text-ink-900">
+									{{ progress.overall.lessonsDone }}/{{ progress.overall.lessonsTotal }} ders
 								</dd>
 							</div>
 							<div class="col-span-2">
@@ -437,11 +501,11 @@ function print() {
 							</ul>
 						</div>
 						<p
-							class="flex gap-2 rounded-xl bg-ink-50 px-3.5 py-3 text-[12px] leading-relaxed text-ink-600"
+							class="flex gap-2 rounded-xl bg-ink-50 px-3.5 py-3 text-[13px] leading-relaxed text-ink-700"
 						>
 							<Info :size="15" class="mt-0.5 shrink-0" aria-hidden="true" />
-							Bu özet, Copilot Academy eğitim simülasyonundaki ilerlemeyi gösterir. Akredite bir
-							sertifika veya Microsoft sertifikası değildir.
+							Copilot Academy bağımsız bir eğitim simülasyonudur ve Microsoft ile bağlantılı
+							değildir. Bu özet akredite bir sertifika veya Microsoft sertifikası değildir.
 						</p>
 						<button
 							v-if="canPrint"

@@ -1,18 +1,7 @@
 <script setup lang="ts">
 import { computed } from 'vue'
 import { RouterLink, useRouter } from 'vue-router'
-import {
-	ArrowRight,
-	BookOpen,
-	Brain,
-	CircleCheck,
-	Compass,
-	Eye,
-	Flag,
-	PenLine,
-	ScanSearch,
-	ShieldCheck,
-} from 'lucide-vue-next'
+import { ArrowRight, CircleCheck, ScanSearch, ShieldCheck } from 'lucide-vue-next'
 import {
 	GRADUATION,
 	LESSON_REFS,
@@ -25,7 +14,7 @@ import {
 	moduleMinutes,
 } from '@/content'
 import { QUIZ_QUESTIONS } from '@/content/quiz'
-import { allTaskIds } from '@/components/lesson/phases'
+import { PHASES, allTaskIds, type StepPhase } from '@/components/lesson/phases'
 import { formatMinutes } from '@/lib/format'
 import { useProgress } from '@/stores/progress'
 import BrandMark from '@/components/layout/BrandMark.vue'
@@ -46,6 +35,18 @@ const primaryLabel = computed(() =>
 	progress.hasProgress ? 'Kaldığım Yerden Devam Et' : 'Eğitime Başla'
 )
 
+/** The course total rounded for a one-line promise; the stats below give it exactly. */
+const TOTAL_HOURS = Math.round(TOTAL_MINUTES / 60)
+
+// Under the start button. The remaining time is the dashboard's own figure.
+const startHint = computed(() => {
+	const pause = 'istediğiniz zaman ara verebilirsiniz.'
+	if (!progress.hasProgress)
+		return `İlk ders yaklaşık ${LESSON_REFS[0].lesson.minutes} dk · toplam yaklaşık ${TOTAL_HOURS} saat · ${pause}`
+	const left = progress.remainingMinutes
+	return left ? `Kalan süre yaklaşık ${formatMinutes(left)} · ${pause}` : ''
+})
+
 function start() {
 	const t = progress.continueTarget
 	if (!progress.hasProgress && t.kind === 'lesson') {
@@ -65,25 +66,27 @@ function start() {
 }
 
 function explore(id: string) {
-	document.getElementById(id)?.scrollIntoView({ behavior: 'smooth', block: 'start' })
+	// JS 'smooth' ignores the CSS reduced-motion rule, so ask the media query.
+	const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches
+	document
+		.getElementById(id)
+		?.scrollIntoView({ behavior: reduce ? 'auto' : 'smooth', block: 'start' })
 }
 
-const LOOP = [
-	{ label: 'Öğren', text: 'Konu kısa ve anlaşılır bölümlerle anlatılır.', icon: BookOpen },
-	{ label: 'Gör', text: 'Gerçekçi bir iş örneği adım adım gösterilir.', icon: Eye },
-	{ label: 'Keşfet', text: 'Örnekle etkileşime girer, seçenekleri denersiniz.', icon: Compass },
-	{ label: 'Uygula', text: 'Kısa bir görevi kendiniz yaparsınız.', icon: PenLine },
+// The phases a lesson moves through, named and drawn as in the lesson stepper.
+// Lessons repeat or reorder some of them, so no step count is promised here;
+// "Kontrol et" is the feedback inside Uygula, not a phase of its own.
+const LOOP: { phase: StepPhase; text: string; feedback?: string }[] = [
+	{ phase: 'learn', text: 'Konu kısa ve anlaşılır bölümlerle anlatılır.' },
+	{ phase: 'see', text: 'Gerçekçi bir iş örneğini bölüm bölüm açarak incelersiniz.' },
+	{ phase: 'explore', text: 'Örnekle etkileşime girer, seçenekleri denersiniz.' },
 	{
-		label: 'Kontrol et',
-		text: 'Cevabınıza göre açıklayıcı geri bildirim alırsınız.',
-		icon: ScanSearch,
+		phase: 'practice',
+		text: 'Kısa bir görevi kendiniz yaparsınız.',
+		feedback: '“Kontrol et” ile cevabınıza göre anında, açıklayıcı geri bildirim alırsınız.',
 	},
-	{
-		label: 'Pekiştir',
-		text: 'Birkaç kısa soruyla öğrendiğinizi sağlamlaştırırsınız.',
-		icon: Brain,
-	},
-	{ label: 'Devam et', text: 'Öğrendiklerinizi özetler, sonraki derse geçersiniz.', icon: Flag },
+	{ phase: 'reinforce', text: 'Birkaç kısa soruyla öğrendiğinizi sağlamlaştırırsınız.' },
+	{ phase: 'continue', text: 'Öğrendiklerinizi özetler, sonraki derse geçersiniz.' },
 ]
 
 const LABS = [
@@ -206,6 +209,7 @@ const LABS = [
 							<button
 								type="button"
 								class="btn btn-lg rounded-full bg-white text-brand-700 shadow-[0_14px_30px_-14px_rgba(60,0,0,.6)] hover:bg-[#fff1f1] focus-visible:ring-white focus-visible:ring-offset-brand-800"
+								:aria-describedby="startHint ? 'start-hint' : undefined"
 								@click="start"
 							>
 								{{ primaryLabel }}
@@ -219,6 +223,9 @@ const LABS = [
 								Eğitimi Keşfet
 							</button>
 						</div>
+						<p v-if="startHint" id="start-hint" class="mt-3 text-[13.5px] text-white">
+							{{ startHint }}
+						</p>
 						<ul class="mt-7 flex flex-wrap gap-x-5 gap-y-2 text-[13px] text-white" role="list">
 							<li class="flex items-center gap-1.5">
 								<CircleCheck :size="15" class="text-white" aria-hidden="true" /> Gerçek hesap
@@ -366,7 +373,7 @@ const LABS = [
 							{{ TOTAL_MODULES }}
 						</dd>
 						<dd class="mt-1.5 text-[12.5px] text-ink-500">
-							{{ TOTAL_LESSONS }} ders, final testi ve mezuniyet
+							{{ TOTAL_LESSONS }} ders, final testi ve tamamlama özeti
 						</dd>
 					</div>
 					<div class="bg-white px-5 py-5">
@@ -374,7 +381,9 @@ const LABS = [
 						<dd class="mt-1 text-[30px] font-bold leading-none text-ink-900">
 							{{ formatMinutes(TOTAL_MINUTES) }}
 						</dd>
-						<dd class="mt-1.5 text-[12.5px] text-ink-500">Kendi hızınızda, bölüm bölüm</dd>
+						<dd class="mt-1.5 text-[12.5px] text-ink-500">
+							Dersler ve final testi, kendi hızınızda
+						</dd>
 					</div>
 					<div class="flex items-center gap-4 bg-white px-5 py-5">
 						<ProgressRing
@@ -482,35 +491,41 @@ const LABS = [
 					<div>
 						<p class="eyebrow !text-brand-700">Nasıl öğrenirsiniz?</p>
 						<h2 id="loop-title" class="mt-2 text-[28px] font-bold leading-tight sm:text-[34px]">
-							Her ders aynı yedi adımlık döngüyü izler
+							Her ders Öğren’den Devam et’e uzanan kısa aşamalardan oluşur
 						</h2>
 						<p class="mt-3 text-[15.5px] leading-relaxed text-ink-600">
-							Her ekranda tek bir öğrenme hedefi vardır. Bir sonraki adıma geçmeden önce kısa bir
-							görev yapar, anında geri bildirim alırsınız. İlerlemeniz otomatik kaydedilir.
+							Her ekranda tek bir öğrenme hedefi vardır. Aşamaların sayısı derse göre değişir; her
+							görevden sonra anında geri bildirim alırsınız. İlerlemeniz otomatik kaydedilir.
 						</p>
 					</div>
-					<ol class="grid gap-2.5 sm:grid-cols-2" role="list">
+					<ul class="grid gap-2.5 sm:grid-cols-2" role="list">
 						<li
-							v-for="(s, i) in LOOP"
-							:key="s.label"
-							:class="[
-								'flex gap-3 rounded-2xl border border-ink-200/80 bg-white p-4 shadow-card',
-								i === LOOP.length - 1 && 'sm:col-span-2',
-							]"
+							v-for="s in LOOP"
+							:key="s.phase"
+							class="flex gap-3 rounded-2xl border border-ink-200/80 bg-white p-4 shadow-card"
 						>
 							<span
 								class="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-brand-50 text-brand-700 ring-1 ring-inset ring-brand-100"
 							>
-								<component :is="s.icon" :size="18" aria-hidden="true" />
+								<component :is="PHASES[s.phase].icon" :size="18" aria-hidden="true" />
 							</span>
 							<div>
-								<p class="text-[15px] font-semibold">
-									<span class="text-ink-500">{{ i + 1 }}.</span> {{ s.label }}
-								</p>
+								<p class="text-[15px] font-semibold">{{ PHASES[s.phase].label }}</p>
 								<p class="text-[13.5px] text-ink-600">{{ s.text }}</p>
+								<p
+									v-if="s.feedback"
+									class="mt-2 flex gap-2 rounded-lg bg-ink-50 px-2.5 py-2 text-[13px] text-ink-700"
+								>
+									<ScanSearch
+										:size="15"
+										class="mt-0.5 shrink-0 text-brand-700"
+										aria-hidden="true"
+									/>
+									{{ s.feedback }}
+								</p>
 							</div>
 						</li>
-					</ol>
+					</ul>
 				</div>
 
 				<h3 class="mt-14 text-[20px] font-bold">Uygulamalı laboratuvarlar</h3>
@@ -546,8 +561,8 @@ const LABS = [
 						</h2>
 					</div>
 					<p class="text-[14px] text-ink-500">
-						{{ TOTAL_LESSONS }} ders · {{ QUIZ_QUESTIONS.length }} soruluk final testi ·
-						{{ formatMinutes(TOTAL_MINUTES) }}
+						{{ TOTAL_LESSONS }} ders · {{ QUIZ_QUESTIONS.length }} soruluk final testi · tamamlama
+						özeti · toplam {{ formatMinutes(TOTAL_MINUTES) }}
 					</p>
 				</div>
 				<ol class="mt-8 grid gap-3 md:grid-cols-2" role="list">
@@ -587,7 +602,7 @@ const LABS = [
 							<AppTile visual="quiz" size="lg" />
 							<div class="min-w-0 flex-1">
 								<p class="text-[12px] font-semibold uppercase tracking-wide text-ink-500">
-									Modül {{ QUIZ.number }}
+									Modüllerden sonra
 								</p>
 								<p
 									class="text-[16px] font-semibold leading-snug text-ink-900 group-hover:text-brand-800"
@@ -595,6 +610,9 @@ const LABS = [
 									{{ QUIZ.title }}
 								</p>
 								<p class="mt-0.5 text-[13.5px] text-ink-500">{{ QUIZ.description }}</p>
+								<p class="mt-2 text-[12.5px] text-ink-500">
+									{{ QUIZ_QUESTIONS.length }} soru · {{ QUIZ.minutes }} dk
+								</p>
 							</div>
 						</RouterLink>
 					</li>
@@ -606,7 +624,7 @@ const LABS = [
 							<AppTile visual="trophy" size="lg" />
 							<div class="min-w-0 flex-1">
 								<p class="text-[12px] font-semibold uppercase tracking-wide text-ink-500">
-									Modül {{ GRADUATION.number }}
+									Eğitimin sonunda
 								</p>
 								<p
 									class="text-[16px] font-semibold leading-snug text-ink-900 group-hover:text-brand-800"

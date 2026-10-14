@@ -2,7 +2,7 @@
 
 **Work smarter. Create faster. Learn Copilot.**
 
-Copilot Academy, Microsoft 365 Copilot’u sıfırdan, uygulayarak öğreten Türkçe ve interaktif bir eğitim uygulamasıdır. 12 modül, 22 ders, uygulamalı laboratuvarlar, senaryolar, 15 soruluk final testi ve başarı sayfasından oluşur.
+Copilot Academy, Microsoft 365 Copilot’u sıfırdan, uygulayarak öğreten Türkçe ve interaktif bir eğitim uygulamasıdır. 10 modül ve 22 dersin yanı sıra uygulamalı laboratuvarlar, senaryolar, 15 soruluk final testi ve yazdırılabilir bir tamamlama özetinden oluşur. Dersler ve final testi toplam yaklaşık 6 saat sürer (ders sürelerinden hesaplanır: `src/content/index.ts` → `TOTAL_MINUTES`).
 
 > **Önemli:** Bu uygulama eğitim amaçlı, bağımsız bir **simülasyondur**. Gerçek bir Microsoft 365 hesabına bağlanmaz, e-posta göndermez, dosyalara erişmez ve Copilot API’sini çağırmaz. Arayüz turundaki ekran görüntüsü dışında tüm şirketler, kişiler, e-postalar, toplantılar ve satış verileri kurgusaldır (bu görüntü gerçek bir kurumun Copilot uygulamasından alınmıştır; kişisel hesap bilgileri gizlenmiştir); “Copilot yanıtları” önceden hazırlanmış örneklerdir. Uygulama Microsoft ile bağlantılı değildir ve verdiği tamamlama özeti akredite bir sertifika ya da Microsoft sertifikası değildir.
 
@@ -51,10 +51,13 @@ Eğitim tamamen tarayıcıda çalışır; kurulum, hesap veya sunucu tarafı kod
 | 8 | Teams | Toplantı transkripti, 5 çıktı türü, “Belirtilmedi” kuralı |
 | 9 | Uygulamalı Senaryolar | 3 uçtan uca iş senaryosu, adım adım seçim ve geri bildirim |
 | 10 | Güvenli Kullanım | Karar alıştırmaları, doğrulama ve sorumluluk |
-| 11 | Final Bilgi Testi | 15 soru, soru başına geri bildirim, %80 geçme puanı |
-| 12 | Başarılarım | Rozetler, gelişim alanları, yazdırılabilir eğitim tamamlama özeti |
 
-Her ders aynı öğrenme döngüsünü izler: **Öğren → Gör → Keşfet → Uygula → Kontrol et → Pekiştir → Devam et.** “Kontrol et”, Uygula adımlarındaki görevlerin anlık geri bildirimidir; “Devam et”, ders özeti ve sıradaki ders önerisidir. Bir adımdaki zorunlu görev tamamlanmadan “Sonraki” düğmesi açılmaz.
+Modüllerin ardından iki ayrı bölüm gelir; bunlar modül sayılmaz:
+
+- **Final Bilgi Testi:** 15 soru, soru başına geri bildirim, %80 geçme puanı.
+- **Tamamlama Özeti ve Başarılarım:** rozetler, gelişim alanları ve yazdırılabilir eğitim tamamlama özeti. Özet kendi kendine tamamlanan bir simülasyonun, bu tarayıcıda kaydedilen ve doğrulanmamış ilerlemesini gösterir; sertifika veya resmî kayıt değildir.
+
+Her ders Öğren’den Devam et’e uzanan kısa aşamalardan oluşur: **Öğren, Gör, Keşfet, Uygula, Pekiştir, Devam et.** Aşamaların sayısı ve sırası derse göre değişir (bazı derslerde bir aşama tekrar eder). “Kontrol et” ayrı bir aşama değil, Uygula’daki görevlerin anlık geri bildirimidir; “Devam et”, ders özeti ve sıradaki ders önerisidir. Bir adımdaki zorunlu görev tamamlanmadan “Sonraki” düğmesi açılmaz.
 
 Özelliklerin kullanılabilirliği lisansa, uygulama sürümüne, yönetici ayarlarına ve erişim izinlerine göre değişebilir; içerik bu notları ilgili derslerde açıkça belirtir.
 

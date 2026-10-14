@@ -38,7 +38,7 @@ export const QUIZ = {
 export const GRADUATION = {
 	id: 'basarilarim',
 	number: 12,
-	title: 'Mezuniyet ve Başarılarım',
+	title: 'Tamamlama Özeti ve Başarılarım',
 	navLabel: 'Başarılarım',
 	minutes: 5,
 	description:
@@ -76,9 +76,13 @@ export const moduleMinutes = (module: Module) =>
 	module.lessons.reduce((sum, lesson) => sum + lesson.minutes, 0)
 
 export const TOTAL_LESSONS = LESSON_REFS.length
-export const TOTAL_MODULES = MODULES.length + 2
-export const TOTAL_MINUTES =
-	MODULES.reduce((sum, m) => sum + moduleMinutes(m), 0) + QUIZ.minutes + GRADUATION.minutes
+/** Lesson modules only: the final test and the completion summary are not modules. */
+export const TOTAL_MODULES = MODULES.length
+/**
+ * Lessons plus the final test: the same units the dashboard's remaining time
+ * counts down, so a fresh start shows one total everywhere.
+ */
+export const TOTAL_MINUTES = MODULES.reduce((sum, m) => sum + moduleMinutes(m), 0) + QUIZ.minutes
 export const INTERACTIVE_COUNT = LESSON_REFS.reduce(
 	(sum, { lesson }) =>
 		sum +

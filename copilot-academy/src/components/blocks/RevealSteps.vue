@@ -8,11 +8,19 @@ import RichText from '@/components/ui/RichText.vue'
 const props = defineProps<{ block: RevealBlock }>()
 const shown = ref(1)
 const list = ref<HTMLElement | null>(null)
+const nextButton = ref<HTMLButtonElement | null>(null)
 
 async function next() {
 	shown.value = Math.min(props.block.steps.length, shown.value + 1)
 	await nextTick()
 	list.value?.querySelectorAll<HTMLElement>('[data-reveal-step]')[shown.value - 1]?.focus()
+}
+
+// "Baştan izle" disappears once pressed; focus goes to the button that takes its place.
+async function restart() {
+	shown.value = 1
+	await nextTick()
+	nextButton.value?.focus()
 }
 </script>
 
@@ -74,23 +82,29 @@ async function next() {
 				</div>
 			</li>
 		</ol>
+		<!-- Counts the parts of this example, not lesson steps: "Adım" is the footer's step counter. -->
 		<div class="mt-3 flex flex-wrap items-center gap-3 ps-10">
 			<button
 				v-if="shown < block.steps.length"
+				ref="nextButton"
 				type="button"
 				class="btn btn-primary btn-sm"
 				@click="next"
 			>
-				Sonraki adımı göster
+				Devamını göster
+				<span aria-hidden="true">({{ shown }}/{{ block.steps.length }})</span>
+				<span class="sr-only">, gösterilen {{ shown }}, toplam {{ block.steps.length }}</span>
 				<ChevronRight :size="16" class="rtl:-scale-x-100" aria-hidden="true" />
 			</button>
-			<button v-else type="button" class="btn btn-ghost btn-sm" @click="shown = 1">
-				<RotateCcw :size="15" aria-hidden="true" />
-				Baştan izle
-			</button>
-			<span class="text-xs text-ink-500" aria-live="polite"
-				>{{ shown }}/{{ block.steps.length }} adım gösterildi</span
-			>
+			<template v-else>
+				<button type="button" class="btn btn-ghost btn-sm" @click="restart">
+					<RotateCcw :size="15" aria-hidden="true" />
+					Baştan izle
+				</button>
+				<span class="text-xs text-ink-500"
+					>Tümü gösterildi ({{ block.steps.length }}/{{ block.steps.length }})</span
+				>
+			</template>
 		</div>
 	</section>
 </template>

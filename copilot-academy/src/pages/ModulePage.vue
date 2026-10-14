@@ -2,7 +2,8 @@
 import { computed } from 'vue'
 import { RouterLink, useRoute } from 'vue-router'
 import { ArrowRight, CircleCheck, CirclePlay, Clock, ListChecks, RotateCcw } from 'lucide-vue-next'
-import { MODULES, SKILLS, getModule, moduleMinutes } from '@/content'
+import { MODULES, SKILLS, TOTAL_MODULES, getModule, moduleMinutes } from '@/content'
+import { PHASES, type StepPhase } from '@/components/lesson/phases'
 import { useProgress } from '@/stores/progress'
 import CalloutBox from '@/components/blocks/CalloutBox.vue'
 import AppTile from '@/components/ui/AppTile.vue'
@@ -40,6 +41,10 @@ const primary = computed(() => {
 	return { lesson, label }
 })
 
+// The phases a lesson moves through, named as the lesson stepper names them.
+// No numbers: lessons repeat or reorder phases, so their step counts differ.
+const FLOW: StepPhase[] = ['learn', 'see', 'explore', 'practice', 'reinforce', 'continue']
+
 const STATE_LABEL = {
 	'not-started': 'Başlanmadı',
 	'in-progress': 'Devam ediyor',
@@ -64,7 +69,7 @@ const STATE_LABEL = {
 				<div>
 					<div class="flex items-center gap-3">
 						<AppTile :visual="module.visual" size="lg" />
-						<p class="eyebrow">Modül {{ module.number }} / 12</p>
+						<p class="eyebrow">Modül {{ module.number }} / {{ TOTAL_MODULES }}</p>
 					</div>
 					<h1 class="mt-4 text-[28px] font-bold leading-tight text-balance sm:text-[36px]">
 						{{ module.title }}
@@ -204,28 +209,25 @@ const STATE_LABEL = {
 				</section>
 				<CalloutBox v-if="availability" :block="availability" />
 				<section class="rounded-2xl border border-ink-200/80 bg-ink-50/70 p-5">
-					<h2 class="text-[15px] font-semibold">Her ders aynı akışı izler</h2>
-					<ol class="mt-3 grid grid-cols-2 gap-x-3 gap-y-1.5 text-[13px] text-ink-600" role="list">
+					<h2 class="text-[15px] font-semibold">Derslerin akışı</h2>
+					<p class="mt-1.5 text-[13px] leading-relaxed text-ink-600">
+						Her ders Öğren’den Devam et’e uzanan kısa aşamalardan oluşur; aşamaların sayısı derse
+						göre değişir.
+					</p>
+					<ul class="mt-3 flex flex-wrap gap-1.5" role="list">
 						<li
-							v-for="(p, i) in [
-								'Öğren',
-								'Gör',
-								'Keşfet',
-								'Uygula',
-								'Kontrol et',
-								'Pekiştir',
-								'Devam et',
-							]"
-							:key="p"
-							class="flex items-center gap-2"
+							v-for="phase in FLOW"
+							:key="phase"
+							:class="['chip py-1 text-[12.5px] ring-1 ring-inset', PHASES[phase].chip]"
 						>
-							<span
-								class="flex h-5 w-5 items-center justify-center rounded-full bg-white text-[11px] font-bold text-brand-700 ring-1 ring-ink-200"
-								>{{ i + 1 }}</span
-							>
-							{{ p }}
+							<component :is="PHASES[phase].icon" :size="13" aria-hidden="true" />
+							{{ PHASES[phase].label }}
 						</li>
-					</ol>
+					</ul>
+					<p class="mt-3 text-[13px] leading-relaxed text-ink-600">
+						<strong class="font-semibold text-ink-800">“Kontrol et”</strong> ayrı bir aşama değil,
+						Uygula’daki görevlerin parçasıdır: her görevden sonra anında geri bildirim alırsınız.
+					</p>
 				</section>
 			</aside>
 		</div>
