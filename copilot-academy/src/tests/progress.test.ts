@@ -1,6 +1,8 @@
 import { beforeEach, describe, expect, it } from 'vitest'
+import { mount } from '@vue/test-utils'
 import { createPinia, setActivePinia } from 'pinia'
 import { nextTick } from 'vue'
+import ReportExplorer from '@/components/interactive/ReportExplorer.vue'
 import { LESSON_REFS, MODULES } from '@/content'
 import { QUIZ_QUESTIONS } from '@/content/quiz'
 import { STORAGE_KEY, emptyProgress, parseProgress, useProgress } from '@/stores/progress'
@@ -123,10 +125,65 @@ describe('progress store', () => {
 		const p = useProgress()
 		p.openLesson(LESSON_REFS[0].lesson.id)
 		p.completeLesson(LESSON_REFS[0].lesson.id)
+		p.saveLab('tur', { seen: ['1'] })
 		p.reset()
 		await nextTick()
 		expect(p.hasProgress).toBe(false)
 		expect(p.earnedBadges).toHaveLength(0)
 		expect(p.overall.lessonsDone).toBe(0)
+		expect(p.labState('tur')).toBeUndefined()
+	})
+})
+
+describe('lab state', () => {
+	beforeEach(() => {
+		localStorage.clear()
+		setActivePinia(createPinia())
+	})
+
+	it('is saved at once and read back after a reload', async () => {
+		const p = useProgress()
+		expect(p.labState('tur')).toBeUndefined()
+		p.saveLab('tur', { seen: ['1', '2'], tried: [] })
+		await nextTick()
+		expect(JSON.parse(localStorage.getItem(STORAGE_KEY)!).labs.tur.seen).toEqual(['1', '2'])
+
+		setActivePinia(createPinia())
+		expect(useProgress().labState('tur')).toEqual({ seen: ['1', '2'], tried: [] })
+	})
+
+	it('starts empty for saves from before it existed or with a broken record', () => {
+		const { labs, ...older } = emptyProgress()
+		expect(labs).toEqual({})
+		expect(parseProgress(older).labs).toEqual({})
+		expect(parseProgress({ ...older, labs: ['x'] }).labs).toEqual({})
+		expect(parseProgress({ ...older, labs: 'x' }).labs).toEqual({})
+		expect(parseProgress({ ...older, labs: { tur: { seen: ['3'] } } }).labs).toEqual({
+			tur: { seen: ['3'] },
+		})
+	})
+
+	it('keeps the report explorer’s prompts and pages across a reload, before completion', async () => {
+		const first = mount(ReportExplorer, { props: { taskId: 'rapor' } })
+		const prompts = first.findAll('button[aria-pressed]').filter((b) => !/^\s*\d/.test(b.text()))
+		await prompts[0].trigger('click')
+		await prompts[1].trigger('click')
+		await first
+			.findAll('button[aria-pressed]')
+			.find((b) => /^\s*4\b/.test(b.text()))!
+			.trigger('click')
+		await nextTick()
+		first.unmount()
+		const p = useProgress()
+		expect(p.isTaskDone('rapor')).toBe(false)
+		expect(p.labState('rapor')).toEqual({ asked: ['ozet', 'kararlar'], opened: [4] })
+		// Only ids of the ready-made prompts are kept, never their text.
+		expect(JSON.stringify(p.labState('rapor'))).not.toMatch(/\s/)
+
+		setActivePinia(createPinia())
+		const again = mount(ReportExplorer, { props: { taskId: 'rapor' } })
+		const finish = again.findAll('button').find((b) => b.text().includes('Görevi Tamamla'))!
+		expect(finish.attributes('disabled')).toBeUndefined()
+		again.unmount()
 	})
 })

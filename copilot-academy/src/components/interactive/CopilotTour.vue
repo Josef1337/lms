@@ -3,6 +3,7 @@
 // a percentage of the screenshot, so it stays on its spot at every width. On
 // wide screens the card floats next to the highlighted area; on narrow ones it
 // drops below the image, which keeps a minimum width and scrolls sideways.
+// Opened and tried stops are saved as soon as they change (ids only).
 import { computed, nextTick, onBeforeUnmount, onMounted, ref, useId, watch } from 'vue'
 import {
 	Check,
@@ -35,10 +36,13 @@ const CORE_IDS = TOUR_STOPS.filter((s) => s.kind === 'core').map((s) => s.id)
 
 // ------------------------------------------------------------ state
 
+/** Saved stop ids: the lab's own record, else the answer stored when the task was completed. */
 const savedIds = (key: 'seen' | 'tried'): string[] => {
-	const answer = props.taskId ? progress.taskResult(props.taskId)?.answer : undefined
-	if (!answer || typeof answer !== 'object' || Array.isArray(answer)) return []
-	const list = answer[key]
+	const saved = props.taskId
+		? progress.labState(props.taskId) ?? progress.taskResult(props.taskId)?.answer
+		: undefined
+	if (!saved || typeof saved !== 'object' || Array.isArray(saved)) return []
+	const list = saved[key]
 	return Array.isArray(list)
 		? list.filter((id): id is string => TOUR_STOPS.some((s) => s.id === id))
 		: []
@@ -56,20 +60,41 @@ const done = computed(() => !!props.taskId && progress.isTaskDone(props.taskId))
 
 function go(i: number) {
 	if (i < 0 || i > LAST) return
+	if (current.value !== i && cardBody.value) cardBody.value.scrollTop = 0
 	current.value = i
 	last.value = i
 	seen.value = new Set(seen.value).add(TOUR_STOPS[i].id)
 }
 
+/**
+ * Opens a stop the learner asked for and keeps it in sight. Scrolls only when
+ * the highlight or the card is out of view, and keeps keyboard focus on a
+ * control that still exists.
+ */
+async function show(i: number, focusTitle = false) {
+	const before = document.activeElement
+	const fromCard = !!before && !!card.value?.contains(before)
+	go(i)
+	await nextTick()
+	place()
+	// Let a card that changed height settle before measuring what is in view.
+	await nextTick()
+	reveal()
+	if (focusTitle) cardTitle.value?.focus({ preventScroll: true })
+	else if (fromCard && before && (!before.isConnected || (before as HTMLButtonElement).disabled)) {
+		// A control that leaves with the old stop (the copy button) or turns
+		// disabled (“Önceki durak” at the first stop) would drop focus to the page.
+		const to = before === prevButton.value ? nextButton.value : cardTitle.value
+		to?.focus({ preventScroll: true })
+	}
+}
+
 function next() {
-	go(last.value === LAST ? 0 : last.value + 1)
+	show(last.value === LAST ? 0 : last.value + 1)
 }
 
 function prev() {
-	const fromButton = document.activeElement === prevButton.value
-	go(Math.max(last.value - 1, 0))
-	// The button turns disabled at the first stop, which would drop focus to the page.
-	if (fromButton && last.value === 0) nextTick(() => nextButton.value?.focus())
+	show(Math.max(last.value - 1, 0))
 }
 
 function hide() {
@@ -81,9 +106,17 @@ function hide() {
 	if (focusInCard) nextTick(() => badgeEls.value[i]?.focus())
 }
 
-function toggleBadge(i: number) {
+/** A click with no pointer behind it (detail 0) came from Enter or Space. */
+const byKeyboard = (e: MouseEvent) => e.detail === 0
+
+function toggleBadge(i: number, e: MouseEvent) {
 	if (current.value === i) hide()
-	else go(i)
+	else show(i, byKeyboard(e))
+}
+
+/** Picking a stop from the list below brings the screenshot back into view. */
+function pickFromList(i: number, e: MouseEvent) {
+	show(i, byKeyboard(e))
 }
 
 function setTried(id: string, value: boolean) {
@@ -95,15 +128,18 @@ function setTried(id: string, value: boolean) {
 
 const answer = () => ({ seen: [...seen.value], tried: [...tried.value] })
 
+// Recorded once: the tour completes the task itself and the checklist may ask again.
 function complete() {
-	if (!props.taskId) return
+	if (!props.taskId || done.value) return
 	progress.recordTask(props.taskId, { correct: true, score: 1, answer: answer() })
 }
 
-// Once the task is stored, keep its record of seen and tried stops current.
+// Saved on every change, so a reload or a step back keeps opened and tried
+// stops. Seeing all nine numbered stops completes the task by itself.
 watch([seen, tried], () => {
-	if (done.value && props.taskId)
-		progress.recordTask(props.taskId, { correct: true, score: 1, answer: answer() })
+	if (!props.taskId) return
+	progress.saveLab(props.taskId, answer())
+	if (seenCore.value === CORE_IDS.length) complete()
 })
 
 const goals = computed(() => [
@@ -115,10 +151,13 @@ const goals = computed(() => [
 
 // ------------------------------------------------------------ layout
 
+const root = ref<HTMLElement>()
 const stage = ref<HTMLElement>()
 const frame = ref<HTMLElement>()
 const shot = ref<HTMLElement>()
 const card = ref<HTMLElement>()
+const cardTitle = ref<HTMLElement>()
+const cardBody = ref<HTMLElement>()
 const prevButton = ref<HTMLButtonElement>()
 const nextButton = ref<HTMLButtonElement>()
 const badgeEls = ref<(HTMLButtonElement | null)[]>([])
@@ -127,19 +166,49 @@ const frameWidth = ref(0)
 const shotWidth = ref(0)
 const shotHeight = ref(0)
 const cardPos = ref({ left: 0, top: 0 })
+/** Height the floating card leaves for the area above it when it sits under it. */
+const cardLift = ref(0)
 const stagePad = ref(0)
+/** The floating card's text is taller than the card and scrolls inside it. */
+const bodyScrolls = ref(false)
+const bodyAtEnd = ref(true)
 
 const sheet = computed(() => frameWidth.value > 0 && frameWidth.value < OVERLAY_MIN)
 const scrollable = computed(() => shotWidth.value > frameWidth.value + 1)
 const badgeSize = computed(() => Math.round(Math.min(32, Math.max(22, shotWidth.value * 0.026))))
+
+/**
+ * The floating card's spot, in physical left/top pixels because it is measured
+ * from the unmirrored screenshot. Its class caps it at the room between the
+ * app's top and bottom bars; under an area it also leaves room for that area.
+ */
+const cardStyle = computed(() =>
+	sheet.value
+		? undefined
+		: {
+				left: `${cardPos.value.left}px`,
+				top: `${cardPos.value.top}px`,
+				maxHeight: cardLift.value
+					? `max(15rem, calc(100dvh - 10rem - ${cardLift.value}px))`
+					: undefined,
+		  }
+)
 
 const pct = (value: number, total: number) => `${(value / total) * 100}%`
 const clamp = (v: number, lo: number, hi: number) => Math.min(Math.max(v, lo), hi)
 const motion = (): ScrollBehavior =>
 	window.matchMedia?.('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth'
 
+/** Notes whether the floating card's text scrolls, and whether it is scrolled to the end. */
+function measureBody() {
+	const b = cardBody.value
+	bodyScrolls.value = !sheet.value && !!b && b.scrollHeight > b.clientHeight + 1
+	bodyAtEnd.value = !b || b.scrollTop + b.clientHeight >= b.scrollHeight - 2
+}
+
 /** Puts the floating card beside the highlighted area, like a callout. */
 function place() {
+	measureBody()
 	const s = stop.value
 	if (!s || sheet.value || !shot.value || !card.value) {
 		stagePad.value = 0
@@ -169,14 +238,22 @@ function place() {
 	else left = null
 
 	let top: number
+	let lift = 0
 	if (left === null) {
-		// No room on either side: centre the card under the area.
+		// No room on either side: centre the card under the area. The card gives
+		// up that much height, so the area and the card fit between the bars.
 		left = (x0 + x1) / 2 - cw / 2
 		top = yb + gap
+		lift = Math.round(top - Math.min(ya, by - badgeSize.value / 2))
 	} else {
 		top = clamp(Math.min(by, ya) - 40, edge, Math.max(edge, h - ch - edge))
 	}
 	left = clamp(left, edge, w - cw - edge)
+	// A new height needs a render before the card can be measured again.
+	if (lift !== cardLift.value) {
+		cardLift.value = lift
+		nextTick(place)
+	}
 
 	// The image sits inside the frame border; the card is positioned in the stage.
 	const offX = shot.value.offsetLeft
@@ -206,23 +283,76 @@ watch([current, sheet, shotWidth, shotHeight], async () => {
 	revealBadge()
 })
 
-/** Picking a stop from the list below brings the screenshot back into view. */
-async function pickFromList(i: number) {
-	go(i)
-	await nextTick()
-	const top = stage.value?.getBoundingClientRect().top ?? 0
-	if (top < 64 || top > window.innerHeight * 0.4)
-		stage.value?.scrollIntoView({ block: 'start', behavior: motion() })
+/**
+ * Viewport rows left free by sticky or fixed bars (the app header on top, the
+ * lesson controls at the bottom), found by looking at what covers each edge.
+ */
+function freeRows(): [number, number] {
+	const h = window.innerHeight
+	const x = clamp((stage.value?.getBoundingClientRect().left ?? 0) + 4, 0, window.innerWidth - 1)
+	const bar = (y: number) => {
+		for (let el = document.elementFromPoint?.(x, y) ?? null; el; el = el.parentElement) {
+			const { position } = getComputedStyle(el)
+			if (position !== 'sticky' && position !== 'fixed') continue
+			const r = el.getBoundingClientRect()
+			return r.height < h / 3 ? r : null
+		}
+		return null
+	}
+	return [bar(1)?.bottom ?? 0, bar(h - 1)?.top ?? h]
+}
+
+/**
+ * After a stop change, scrolls only if what the learner needs is not in view.
+ * Floating card: the higher of the highlight and the card comes to just below
+ * the header. Card under the image: the screenshot comes into view.
+ */
+function reveal() {
+	const s = stop.value
+	const r = shot.value?.getBoundingClientRect()
+	if (!s || !r?.height || !stage.value) return
+	const [free, freeEnd] = freeRows()
+	const stageTop = stage.value.getBoundingClientRect().top
+	let from = stageTop
+	let to = r.bottom
+	if (!sheet.value) {
+		const sy = r.height / IMG.height
+		const half = badgeSize.value / 2
+		// The card glides to its new spot; use where it ends up, not where it is now.
+		const cardTop = stageTop + cardPos.value.top
+		from = Math.min(r.top + Math.min(s.box[1], s.badge[1]) * sy - half, cardTop)
+		to = Math.max(
+			r.top + Math.max(s.box[3], s.badge[1]) * sy + half,
+			cardTop + (card.value?.offsetHeight ?? 0)
+		)
+	}
+	if (from >= free && to <= freeEnd) return
+	const by = from - free - 12
+	if (Math.abs(by) > 2) window.scrollBy({ top: by, behavior: motion() })
 }
 
 // Widgets that use these keys themselves keep them while they have focus.
 const OWN_KEYS =
 	'textarea, select, [contenteditable="true"], [role="dialog"], [role="radiogroup"], [role="tablist"], [role="listbox"], [role="menu"], [role="slider"]'
 
-/** Page-wide shortcuts while the tour is on screen, as in the original tour. */
+// Outside the tour, keys pressed on any of these belong to them.
+const WIDGET_ROLES =
+	'button link checkbox radio switch tab menuitem menuitemcheckbox menuitemradio option slider spinbutton combobox textbox searchbox dialog alertdialog listbox menu menubar tablist radiogroup grid treegrid tree'
+const CONTROLS = [
+	'a[href], button, input, select, textarea, summary, iframe',
+	'[contenteditable]:not([contenteditable="false"]), [tabindex]:not([tabindex="-1"])',
+	...WIDGET_ROLES.split(' ').map((role) => `[role="${role}"]`),
+].join(', ')
+
+/**
+ * Shortcuts work while focus is on nothing in particular (the page, the main
+ * area, a heading such as the step title) or anywhere in the tour. A link,
+ * button or field elsewhere, like the sidebar, keeps its keys.
+ */
 function onKey(e: KeyboardEvent) {
 	if (e.defaultPrevented || e.altKey || e.ctrlKey || e.metaKey) return
 	const t = e.target instanceof Element ? e.target : null
+	if (t && !root.value?.contains(t) && t.closest(CONTROLS)) return
 	if (t?.closest(OWN_KEYS)) return
 	if (t instanceof HTMLInputElement && t.type !== 'checkbox') return
 	const key = e.key
@@ -238,7 +368,7 @@ function onKey(e: KeyboardEvent) {
 	}
 	if (target === null || target < 0) return
 	e.preventDefault()
-	go(target)
+	show(target)
 }
 
 let observer: ResizeObserver | undefined
@@ -270,7 +400,7 @@ const announcement = computed(() =>
 </script>
 
 <template>
-	<div class="space-y-4">
+	<div ref="root" class="space-y-4">
 		<div class="flex flex-wrap items-end justify-between gap-x-6 gap-y-3">
 			<p class="max-w-2xl text-[14.5px] leading-relaxed text-ink-700">
 				Ekrandaki numaralara tıklayın ya da
@@ -356,7 +486,7 @@ const announcement = computed(() =>
 						:aria-label="`${s.id}. ${s.title}${tried.has(s.id) ? ' (denendi)' : ''}`"
 						:aria-current="current === i ? 'step' : undefined"
 						:aria-controls="cardId"
-						@click="toggleBadge(i)"
+						@click="toggleBadge(i, $event)"
 					>
 						{{ s.id }}
 						<span
@@ -387,13 +517,17 @@ const announcement = computed(() =>
 				:id="cardId"
 				ref="card"
 				:class="[
-					'grid gap-3 rounded-2xl border border-ink-200 bg-white p-4 text-ink-800 shadow-float sm:p-5',
-					sheet ? 'mt-4' : 'absolute z-10 w-[min(400px,92%)] transition-[left,top] duration-300',
+					'flex flex-col rounded-2xl border border-ink-200 bg-white text-ink-800 shadow-float',
+					sheet
+						? 'mt-4'
+						: 'absolute z-10 max-h-[calc(100dvh-10rem)] w-[min(400px,92%)] transition-[left,top] duration-300',
 				]"
-				:style="sheet ? undefined : { left: `${cardPos.left}px`, top: `${cardPos.top}px` }"
+				:style="cardStyle"
 				:aria-labelledby="titleId"
 			>
-				<div class="flex items-start gap-3">
+				<!-- Floating, the card stays between the app's top and bottom bars: the
+				     title and the buttons keep their place and the text scrolls. -->
+				<div class="flex shrink-0 items-start gap-3 px-4 pt-4 sm:px-5 sm:pt-5">
 					<span
 						:class="[
 							'flex h-[34px] w-[34px] shrink-0 items-center justify-center rounded-full text-[16px] font-bold',
@@ -405,7 +539,12 @@ const announcement = computed(() =>
 						>{{ stop.id }}</span
 					>
 					<div class="min-w-0 flex-1">
-						<h3 :id="titleId" class="text-[19px] font-bold leading-tight">
+						<h3
+							:id="titleId"
+							ref="cardTitle"
+							tabindex="-1"
+							class="rounded-sm text-[19px] font-bold leading-tight"
+						>
 							<span class="sr-only">{{ stop.id }}. </span>{{ stop.title }}
 						</h3>
 						<p class="mt-0.5 text-[12.5px] text-ink-500">{{ stop.where }}</p>
@@ -420,51 +559,76 @@ const announcement = computed(() =>
 					</button>
 				</div>
 
-				<div class="grid gap-1">
-					<p :class="LABEL">Ne işe yarar</p>
-					<p class="text-[14px] leading-relaxed">{{ stop.what }}</p>
-				</div>
-				<div class="grid gap-1">
-					<p :class="LABEL">Ne zaman kullanırım</p>
-					<p class="text-[14px] leading-relaxed">{{ stop.when }}</p>
-				</div>
-				<div class="grid gap-1">
-					<p :class="LABEL">Nasıl yapılır</p>
-					<ol class="list-decimal space-y-0.5 ps-5 text-[14px] leading-relaxed marker:text-ink-500">
-						<li v-for="h in stop.how" :key="h">{{ h }}</li>
-					</ol>
-				</div>
-				<div v-if="stop.prompt" class="grid gap-1">
-					<p :class="LABEL">Örnek prompt</p>
-					<div class="rounded-xl border border-iris-200 bg-iris-50 p-3">
-						<p class="font-mono text-[13px] leading-relaxed text-ink-800">{{ stop.prompt }}</p>
-						<CopyButton class="mt-2" :text="stop.prompt" size="sm" label="Promptu kopyala" />
+				<div class="relative flex min-h-0 flex-col">
+					<div
+						ref="cardBody"
+						:class="[
+							'grid gap-3 px-4 py-3 sm:px-5',
+							!sheet &&
+								'min-h-0 overflow-y-auto overscroll-contain scrollbar-thin focus-visible:ring-inset focus-visible:ring-offset-0',
+						]"
+						:tabindex="bodyScrolls ? 0 : undefined"
+						:role="bodyScrolls ? 'group' : undefined"
+						:aria-label="bodyScrolls ? 'Durak ayrıntıları' : undefined"
+						@scroll.passive="measureBody"
+					>
+						<div class="grid gap-1">
+							<p :class="LABEL">Ne işe yarar</p>
+							<p class="text-[14px] leading-relaxed">{{ stop.what }}</p>
+						</div>
+						<div class="grid gap-1">
+							<p :class="LABEL">Ne zaman kullanırım</p>
+							<p class="text-[14px] leading-relaxed">{{ stop.when }}</p>
+						</div>
+						<div class="grid gap-1">
+							<p :class="LABEL">Nasıl yapılır</p>
+							<ol
+								class="list-decimal space-y-0.5 ps-5 text-[14px] leading-relaxed marker:text-ink-500"
+							>
+								<li v-for="h in stop.how" :key="h">{{ h }}</li>
+							</ol>
+						</div>
+						<div v-if="stop.prompt" class="grid gap-1">
+							<p :class="LABEL">Örnek prompt</p>
+							<div class="rounded-xl border border-iris-200 bg-iris-50 p-3">
+								<p class="font-mono text-[13px] leading-relaxed text-ink-800">{{ stop.prompt }}</p>
+								<CopyButton class="mt-2" :text="stop.prompt" size="sm" label="Promptu kopyala" />
+							</div>
+						</div>
+						<div class="grid gap-1">
+							<p :class="LABEL">Ne göreceksiniz</p>
+							<p class="text-[14px] leading-relaxed">{{ stop.expect }}</p>
+						</div>
+						<p
+							v-if="stop.note"
+							class="flex gap-2 rounded-xl border border-warning-100 bg-warning-50 px-3 py-2 text-[13.5px] leading-snug text-warning-700"
+						>
+							<TriangleAlert :size="15" class="mt-0.5 shrink-0" aria-hidden="true" />
+							<span>{{ stop.note }}</span>
+						</p>
+						<label
+							class="flex cursor-pointer items-start gap-2.5 rounded-xl bg-success-50 px-3 py-2.5 text-[14px] leading-snug"
+						>
+							<input
+								type="checkbox"
+								class="mt-0.5 h-[18px] w-[18px] shrink-0 accent-success-600"
+								:checked="tried.has(stop.id)"
+								@change="setTried(stop.id, ($event.target as HTMLInputElement).checked)"
+							/>
+							<span><b class="text-success-700">Siz deneyin:</b> {{ stop.tryIt }}</span>
+						</label>
 					</div>
-				</div>
-				<div class="grid gap-1">
-					<p :class="LABEL">Ne göreceksiniz</p>
-					<p class="text-[14px] leading-relaxed">{{ stop.expect }}</p>
-				</div>
-				<p
-					v-if="stop.note"
-					class="flex gap-2 rounded-xl border border-warning-100 bg-warning-50 px-3 py-2 text-[13.5px] leading-snug text-warning-700"
-				>
-					<TriangleAlert :size="15" class="mt-0.5 shrink-0" aria-hidden="true" />
-					<span>{{ stop.note }}</span>
-				</p>
-				<label
-					class="flex cursor-pointer items-start gap-2.5 rounded-xl bg-success-50 px-3 py-2.5 text-[14px] leading-snug"
-				>
-					<input
-						type="checkbox"
-						class="mt-0.5 h-[18px] w-[18px] shrink-0 accent-success-600"
-						:checked="tried.has(stop.id)"
-						@change="setTried(stop.id, ($event.target as HTMLInputElement).checked)"
+					<!-- More text below: a soft fade above the buttons says so. -->
+					<div
+						v-if="bodyScrolls && !bodyAtEnd"
+						class="pointer-events-none absolute bottom-0 end-0 start-0 h-10 bg-gradient-to-t from-white"
+						aria-hidden="true"
 					/>
-					<span><b class="text-success-700">Siz deneyin:</b> {{ stop.tryIt }}</span>
-				</label>
+				</div>
 
-				<div class="flex items-center justify-between gap-3 border-t border-ink-200 pt-3">
+				<div
+					class="flex shrink-0 items-center justify-between gap-3 border-t border-ink-200 px-4 pb-4 pt-3 sm:px-5 sm:pb-5"
+				>
 					<span class="text-[13px] tabular-nums text-ink-500">
 						{{ current! + 1 }} / {{ TOUR_STOPS.length }}
 					</span>
@@ -476,13 +640,15 @@ const announcement = computed(() =>
 							:disabled="current === 0"
 							@click="prev"
 						>
-							<ChevronLeft :size="15" aria-hidden="true" /> Önceki
+							<ChevronLeft :size="15" class="rtl:-scale-x-100" aria-hidden="true" /> Önceki durak
 						</button>
 						<button ref="nextButton" type="button" class="btn btn-primary btn-sm" @click="next">
 							<template v-if="current === LAST">
 								<RotateCcw :size="15" aria-hidden="true" /> Başa dön
 							</template>
-							<template v-else>Sonraki <ChevronRight :size="15" aria-hidden="true" /></template>
+							<template v-else
+								>Sonraki durak <ChevronRight :size="15" class="rtl:-scale-x-100" aria-hidden="true"
+							/></template>
 						</button>
 					</div>
 				</div>
@@ -506,7 +672,7 @@ const announcement = computed(() =>
 								: 'border-ink-200 bg-white hover:border-ink-300 hover:bg-ink-50',
 						]"
 						:aria-current="current === i ? 'step' : undefined"
-						@click="pickFromList(i)"
+						@click="pickFromList(i, $event)"
 					>
 						<span
 							:class="[

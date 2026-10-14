@@ -1,5 +1,8 @@
 <script setup lang="ts">
-import { computed, ref } from 'vue'
+// Report explorer: canned Copilot answers about a sample report, each line
+// citing its page. The prompts tried and the pages opened are saved as soon
+// as they change (ids and page numbers only).
+import { computed, ref, watch } from 'vue'
 import { CircleCheck, FileSearch, SearchX } from 'lucide-vue-next'
 import { REPORT_PAGES, REPORT_PROMPTS, REPORT_TITLE } from '@/content/datasets/report'
 import { useProgress } from '@/stores/progress'
@@ -11,8 +14,22 @@ import TaskGoal from './TaskGoal.vue'
 const props = defineProps<{ taskId?: string }>()
 const progress = useProgress()
 
-const asked = ref<Set<string>>(new Set())
-const opened = ref<Set<number>>(new Set())
+/** Saved list: the lab's own record, else the answer stored when the task was completed. */
+function savedList(key: 'asked' | 'opened'): unknown[] {
+	const saved = props.taskId
+		? progress.labState(props.taskId) ?? progress.taskResult(props.taskId)?.answer
+		: undefined
+	if (!saved || typeof saved !== 'object' || Array.isArray(saved)) return []
+	const list = saved[key]
+	return Array.isArray(list) ? list : []
+}
+
+const asked = ref<Set<string>>(
+	new Set(savedList('asked').filter((id): id is string => REPORT_PROMPTS.some((p) => p.id === id)))
+)
+const opened = ref<Set<number>>(
+	new Set(savedList('opened').filter((n): n is number => REPORT_PAGES.some((p) => p.page === n)))
+)
 const activeId = ref<string | null>(null)
 const activePage = ref<number | null>(null)
 
@@ -29,6 +46,13 @@ function openPage(n: number) {
 	opened.value = new Set(opened.value).add(n)
 }
 
+const answer = () => ({ asked: [...asked.value], opened: [...opened.value] })
+
+// Saved on every change, so a reload or a step back keeps what was tried.
+watch([asked, opened], () => {
+	if (props.taskId) progress.saveLab(props.taskId, answer())
+})
+
 const goals = computed(() => [
 	{ label: 'En az iki farklı prompt deneyin', done: asked.value.size >= 2 },
 	{
@@ -39,11 +63,7 @@ const goals = computed(() => [
 
 function complete() {
 	if (!props.taskId) return
-	progress.recordTask(props.taskId, {
-		correct: true,
-		score: 1,
-		answer: { asked: [...asked.value], opened: [...opened.value] },
-	})
+	progress.recordTask(props.taskId, { correct: true, score: 1, answer: answer() })
 }
 </script>
 

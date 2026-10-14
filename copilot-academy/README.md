@@ -96,7 +96,7 @@ src/
 - İlerleme yalnızca tarayıcıda, `localStorage` içindeki `copilot-academy:progress` anahtarında tutulur. Sunucu, hesap veya analitik yoktur.
 - Kayıt cihaza ve tarayıcıya özeldir; başka bir cihazda veya tarayıcıda ilerleme görünmez. Safari ve iOS, siteyi yaklaşık bir hafta boyunca açmayan kullanıcıların sitede sakladığı verileri silebilir (Intelligent Tracking Prevention). Tamamlama takibi kurumsal olarak gerekiyorsa bir LMS (SCORM/xAPI) veya sunucu entegrasyonu gerekir.
 - Aynı tarayıcıda birden fazla sekme açıksa ilerleme sekmeler arasında eşitlenir.
-- Saklanan veriler: tamamlanan ders/görev kimlikleri, seçilen cevap seçenekleri, arayüz turunda açılan ve “denendi” olarak işaretlenen duraklar, test puanları, rozetler ve son etkinlikler. Kullanıcının yazdığı serbest metinler (ör. Prompt Builder alanları) **saklanmaz**.
+- Saklanan veriler: tamamlanan ders/görev kimlikleri, seçilen cevap seçenekleri, arayüz turunda açılan ve “denendi” olarak işaretlenen duraklar, rapor gezgininde seçilen hazır promptlar ve açılan sayfa numaraları, test puanları, rozetler ve son etkinlikler. Tur durakları ve rapor gezgini seçimleri, görev tamamlanmadan da o anda kaydedilir; böylece sayfa yenilense ya da önceki adıma dönülse bile kaybolmaz. Bunlar yalnızca kimlik ve numara olarak tutulur. Kullanıcının yazdığı serbest metinler (ör. Prompt Builder alanları) **saklanmaz**.
 - Tamamlama özetinde isteğe bağlı olarak yazılan ad da kaydedilmez; yalnızca yazdırma için kullanılır.
 - Panel sayfasındaki “İlerlemeyi sıfırla” bölümünden (iki adımlı onayla) tüm kayıtlar silinebilir.
 

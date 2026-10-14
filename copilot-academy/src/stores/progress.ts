@@ -17,7 +17,7 @@ import { BADGES, getBadge, type BadgeContext } from '@/content/badges'
 import { QUIZ_QUESTIONS } from '@/content/quiz'
 import { scoreQuiz } from '@/lib/quizScoring'
 import { readJson, removeKey, writeJson } from '@/lib/storage'
-import type { TaskResult } from '@/types/content'
+import type { Json, TaskResult } from '@/types/content'
 
 export const STORAGE_KEY = 'copilot-academy:progress'
 const VERSION = 1
@@ -60,6 +60,8 @@ export interface ProgressData {
 	startedAt: string | null
 	lessons: Record<string, LessonProgress>
 	tasks: Record<string, TaskResult>
+	/** Work in progress of open-ended labs by task id (opened stops, tried prompts): ids only. */
+	labs: Record<string, Json>
 	quiz: { attempts: QuizAttempt[]; draft: QuizDraft | null }
 	badges: Record<string, string>
 	activity: Activity[]
@@ -72,6 +74,7 @@ export const emptyProgress = (): ProgressData => ({
 	startedAt: null,
 	lessons: {},
 	tasks: {},
+	labs: {},
 	quiz: { attempts: [], draft: null },
 	badges: {},
 	activity: [],
@@ -92,6 +95,8 @@ export function parseProgress(raw: unknown): ProgressData {
 		startedAt: typeof raw.startedAt === 'string' ? raw.startedAt : null,
 		lessons: isObject(raw.lessons) ? (raw.lessons as ProgressData['lessons']) : {},
 		tasks: isObject(raw.tasks) ? (raw.tasks as ProgressData['tasks']) : {},
+		// Added after the first release: older saves have none, which is fine.
+		labs: isObject(raw.labs) ? (raw.labs as ProgressData['labs']) : {},
 		quiz: {
 			attempts: Array.isArray(quiz.attempts) ? (quiz.attempts as QuizAttempt[]) : [],
 			draft: isObject(quiz.draft) ? (quiz.draft as unknown as QuizDraft) : null,
@@ -265,6 +270,19 @@ export const useProgress = defineStore('progress', () => {
 		delete data.tasks[taskId]
 	}
 
+	// ------------------------------------------------------------ labs
+
+	/** What an open-ended lab saved so far, or undefined before its first save. */
+	const labState = (labId: string): Json | undefined => data.labs[labId]
+
+	/**
+	 * Saves a lab's work in progress at once, not only when its task is
+	 * completed. Labs pass ids and numbers, never text the learner typed.
+	 */
+	function saveLab(labId: string, value: Json) {
+		data.labs[labId] = value
+	}
+
 	// ------------------------------------------------------------ quiz
 
 	function saveQuizDraft(draft: QuizDraft) {
@@ -374,6 +392,8 @@ export const useProgress = defineStore('progress', () => {
 		isTaskDone,
 		recordTask,
 		clearTask,
+		labState,
+		saveLab,
 		saveQuizDraft,
 		discardQuizDraft,
 		submitQuiz,
