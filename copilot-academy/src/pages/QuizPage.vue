@@ -18,6 +18,7 @@ import { getBadge } from '@/content/badges'
 import { QUIZ_QUESTIONS } from '@/content/quiz'
 import { formatDate } from '@/lib/format'
 import { PASS_RATIO, scoreQuiz } from '@/lib/quizScoring'
+import { seededShuffle } from '@/lib/shuffle'
 import { useProgress, type QuizAttempt } from '@/stores/progress'
 import AppTile from '@/components/ui/AppTile.vue'
 import ProgressBar from '@/components/ui/ProgressBar.vue'
@@ -39,6 +40,16 @@ const heading = ref<HTMLElement | null>(null)
 const total = QUIZ_QUESTIONS.length
 const passCount = Math.ceil(total * PASS_RATIO)
 const question = computed(() => QUIZ_QUESTIONS[index.value])
+// Options appear in a per-attempt order, seeded by the number of finished
+// attempts: the same through an attempt and across a reload, new on the next
+// attempt. Answers are stored by option id, so the order never affects the
+// score, and the A–D letters follow what is on screen.
+const shownOptions = computed(() =>
+	seededShuffle(
+		question.value.options,
+		`${question.value.id}:${progress.data.quiz.attempts.length}`
+	)
+)
 const answered = computed(() => answers.value[question.value.id])
 const answeredCount = computed(() => QUIZ_QUESTIONS.filter((q) => answers.value[q.id]).length)
 const hasDraft = computed(
@@ -318,7 +329,7 @@ const LETTERS = ['A', 'B', 'C', 'D', 'E']
 				</h1>
 				<div class="mt-5 space-y-2.5" role="radiogroup" aria-labelledby="quiz-question">
 					<button
-						v-for="(o, oi) in question.options"
+						v-for="(o, oi) in shownOptions"
 						:key="o.id"
 						type="button"
 						role="radio"

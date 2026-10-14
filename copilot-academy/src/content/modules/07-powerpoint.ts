@@ -339,7 +339,7 @@ const powerpoint: Module = {
 							steps: [
 								{
 									title: 'Kaynak paragraf',
-									body: '“İade sürecini “zor” bulan müşterilerin tekrar satın alma oranı %22, “kolay” bulanlarınki %41.”',
+									body: '“İade sürecini ‘zor’ bulan müşterilerin tekrar satın alma oranı %22, ‘kolay’ bulanlarınki %41.”',
 								},
 								{
 									title: 'Mesaj taşıyan başlık',

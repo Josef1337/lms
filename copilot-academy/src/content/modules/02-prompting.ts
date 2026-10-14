@@ -763,7 +763,7 @@ const prompting: Module = {
 								},
 								{
 									id: 'b',
-									text: '“Ekteki 12 Mayıs proje toplantısı notlarını, toplantıya katılamayan ekip üyeleri için özetle. Kararları, sorumlu kişileri ve tarihleriyle aksiyonları ve açık soruları ayrı başlıklarla listele. Notlarda olmayan bilgileri ekleme; sorumlusu belirtilmeyen aksiyonlar için “Belirtilmedi” yaz.”',
+									text: '“Ekteki 12 Mayıs proje toplantısı notlarını, toplantıya katılamayan ekip üyeleri için özetle. Kararları, sorumlu kişileri ve tarihleriyle aksiyonları ve açık soruları ayrı başlıklarla listele. Notlarda olmayan bilgileri ekleme; sorumlusu belirtilmeyen aksiyonlar için ‘Belirtilmedi’ yaz.”',
 									correct: true,
 									feedback:
 										'Kaynak, hedef kitle, beklenen yapı ve doğrulama kısıtı açık. Copilot’ın tahmin etmesi gereken bir şey kalmıyor.',

@@ -18,6 +18,10 @@ const strings = (value: unknown): string[] => {
 	return []
 }
 
+/** Every learner-facing text: lessons, the quiz, badges and the sample data. */
+const DATASETS = import.meta.glob('../content/datasets/*.ts', { eager: true })
+const allTexts = () => strings([MODULES, QUIZ_QUESTIONS, BADGES, Object.values(DATASETS)])
+
 describe('curriculum', () => {
 	it('has ten lesson modules numbered 1–10', () => {
 		expect(MODULES.map((m) => m.number)).toEqual([1, 2, 3, 4, 5, 6, 7, 8, 9, 10])
@@ -136,6 +140,22 @@ describe('curriculum', () => {
 		for (const text of strings(MODULES)) {
 			expect((text.match(/\*\*/g) ?? []).length % 2, text).toBe(0)
 		}
+	})
+
+	it('nests quotes as ‘…’ inside “…”', () => {
+		for (const text of allTexts()) {
+			let depth = 0
+			for (const ch of text) {
+				if (ch === '“') {
+					expect(depth, text).toBe(0)
+					depth += 1
+				} else if (ch === '”') depth = Math.max(0, depth - 1)
+			}
+		}
+	})
+
+	it('writes amounts with ₺, not TL', () => {
+		for (const text of allTexts()) expect(text).not.toMatch(/\d\s*TL\b/)
 	})
 
 	it('has scenario steps with exactly one correct option each', () => {

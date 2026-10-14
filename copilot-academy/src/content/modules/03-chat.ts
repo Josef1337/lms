@@ -369,7 +369,7 @@ const chat: Module = {
 								},
 								{
 									role: 'copilot',
-									text: 'Politikaya göre yurt içi konaklamada gecelik limit 3.500 TL’dir (Bölüm 4.2). Büyükşehirlerde bu limit %20 artırılabilir (Bölüm 4.3).',
+									text: 'Politikaya göre yurt içi konaklamada gecelik limit 3.500 ₺ (Bölüm 4.2). Büyükşehirlerde bu limit %20 artırılabilir (Bölüm 4.3).',
 									note: 'Örnek yanıt; politika ve rakamlar kurgusaldır.',
 								},
 							],
