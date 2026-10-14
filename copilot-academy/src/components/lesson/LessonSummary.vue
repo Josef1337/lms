@@ -16,18 +16,24 @@ const props = defineProps<{
 	completed: boolean
 	newBadges: string[]
 }>()
-defineEmits<{ complete: [] }>()
 
 const progress = useProgress()
 const lesson = computed(() => props.lessonRef.lesson)
 
+// Counted, not graded: how many tasks ended fully right, with a nudge to
+// revisit the rest. Most tasks keep the answer of their latest check, so the
+// count is not called a "first try" score.
 const taskStats = computed(() => {
 	const ids = allTaskIds(lesson.value.steps)
-	const results = ids.map((id) => progress.taskResult(id)).filter((r) => !!r)
-	const score = results.length
-		? results.reduce((s, r) => s + (r.score ?? (r.correct ? 1 : 0)), 0) / results.length
-		: 0
-	return { total: ids.length, done: results.length, percent: Math.round(score * 100) }
+	const correct = ids.filter((id) => progress.taskResult(id)?.correct).length
+	return { total: ids.length, correct }
+})
+const taskMessage = computed(() => {
+	const { total, correct } = taskStats.value
+	if (!total) return 'Bu derste görev yoktu.'
+	if (correct === total)
+		return total === 1 ? 'Görevi doğru yaptınız. Tebrikler!' : 'Hepsini doğru yaptınız. Tebrikler!'
+	return 'Yanlışları ilgili adıma dönüp tekrar çözerek pekiştirebilirsiniz.'
 })
 
 const badges = computed(() => props.newBadges.map((id) => getBadge(id)).filter((b) => !!b))
@@ -122,13 +128,15 @@ const moduleDone = computed(
 			</section>
 			<section class="card p-5">
 				<p class="flex items-center gap-2 text-sm font-semibold text-ink-700">
-					<Icon name="gauge" :size="16" /> Görev performansınız
+					<Icon name="gauge" :size="16" /> Görevleriniz
 				</p>
-				<p class="mt-3 text-3xl font-bold text-ink-900">%{{ taskStats.percent }}</p>
-				<p class="mt-1 text-[13px] text-ink-500">
-					{{ taskStats.done }}/{{ taskStats.total }} görev ve soru tamamlandı. Puan, ilk
-					denemelerinize göre hesaplanır.
+				<p v-if="taskStats.total" class="mt-3 flex items-baseline gap-2">
+					<span class="text-3xl font-bold text-ink-900"
+						>{{ taskStats.correct }}/{{ taskStats.total }}</span
+					>
+					<span class="text-[14px] font-semibold text-ink-600">görev doğru</span>
 				</p>
+				<p class="mt-1 text-[13px] text-ink-500">{{ taskMessage }}</p>
 			</section>
 		</div>
 
@@ -154,16 +162,7 @@ const moduleDone = computed(
 					</p>
 				</div>
 			</template>
-			<button
-				v-if="!completed"
-				type="button"
-				class="btn btn-accent shrink-0"
-				@click="$emit('complete')"
-			>
-				<CircleCheck :size="16" aria-hidden="true" /> Dersi Tamamla
-			</button>
 			<RouterLink
-				v-else
 				:to="
 					next
 						? { name: 'lesson', params: { moduleId: next.module.id, lessonId: next.lesson.id } }
@@ -171,7 +170,7 @@ const moduleDone = computed(
 				"
 				class="btn btn-primary shrink-0"
 			>
-				{{ next ? 'Sonraki derse geç' : 'Teste başla' }}
+				{{ next ? 'Sonraki derse geç' : 'Final testine geç' }}
 				<ArrowRight :size="16" class="rtl:-scale-x-100" aria-hidden="true" />
 			</RouterLink>
 		</section>

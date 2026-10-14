@@ -1,5 +1,5 @@
 import { BookOpen, Brain, Compass, Eye, Flag, PenLine } from 'lucide-vue-next'
-import type { Component } from 'vue'
+import type { Component, InjectionKey } from 'vue'
 import type { Block, Phase, Step } from '@/types/content'
 
 export type StepPhase = Phase | 'continue'
@@ -51,12 +51,13 @@ export const PHASE_PURPOSE: Record<StepPhase, string> = {
 	learn: 'Konuyu kısa ve anlaşılır bölümlerle öğrenin.',
 	see: 'Gerçekçi bir iş örneğinde nasıl göründüğünü inceleyin.',
 	explore: 'Örnekle etkileşime girin; seçenekleri deneyip sonuçları karşılaştırın.',
-	practice: 'Küçük görevi yapın; “Kontrol et” veya “Görevi Tamamla” ile geri bildirim alın.',
+	practice: 'Küçük görevi yapın; geri bildirimle neyin neden doğru olduğunu görün.',
 	reinforce: 'Birkaç kısa soruyla öğrendiklerinizi pekiştirin.',
 	continue: 'Bu derste öğrendiklerinizi gözden geçirin ve devam edin.',
 }
 
-const taskIdOf = (block: Block): string | null => {
+/** The id a block stores its result under, or null when it is not a required task. */
+export const taskIdOf = (block: Block): string | null => {
 	switch (block.type) {
 		case 'choice':
 		case 'classify':
@@ -85,3 +86,15 @@ export const allTaskIds = (steps: Step[]): string[] => steps.flatMap(requiredTas
  */
 export const firstOpenStep = (steps: Step[], isDone: (taskId: string) => boolean): number =>
 	steps.findIndex((s) => requiredTasks(s).some((id) => !isDone(id)))
+
+export interface GoalItem {
+	label: string
+	done: boolean
+}
+
+/**
+ * Lesson page → open-ended labs. Each lab's checklist (TaskGoal) registers a
+ * getter for its goals under its task id, so the step can name them under
+ * its title while the checklist itself sits below the lab.
+ */
+export const TASK_GOALS: InjectionKey<Map<string, () => GoalItem[]>> = Symbol('task-goals')

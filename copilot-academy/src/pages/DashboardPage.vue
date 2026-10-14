@@ -52,6 +52,13 @@ const quizState = computed(() => {
 		  }
 })
 
+// The "Başarılarım" card counts badges rather than saying "Devam ediyor".
+const badgeLabel = computed(() => {
+	if (progress.overall.percent === 100) return undefined
+	const count = progress.earnedBadges.length
+	return count ? `${count} rozet` : 'Henüz rozet yok'
+})
+
 const greeting = computed(() => (progress.hasProgress ? 'Tekrar hoş geldiniz' : 'Hoş geldiniz'))
 
 const confirmReset = ref(false)
@@ -149,6 +156,15 @@ function reset() {
 								</template>
 							</div>
 						</div>
+						<!-- Information only: the lesson above is the one next step to click. -->
+						<p
+							v-if="recommended"
+							class="mt-5 border-t border-white/20 pt-4 text-[13px] leading-snug text-white"
+						>
+							<span class="font-semibold">Bundan sonra:</span>
+							{{ recommended.lesson.title }} · Modül {{ recommended.module.number }} ·
+							{{ recommended.lesson.minutes }} dk
+						</p>
 					</template>
 
 					<template v-else-if="target.kind === 'quiz'">
@@ -315,7 +331,7 @@ function reset() {
 							:number="GRADUATION.number"
 							:title="GRADUATION.navLabel"
 							tagline="Rozetler, tamamlanan modüller ve eğitim tamamlama özeti"
-							:meta="`${progress.earnedBadges.length} rozet`"
+							:meta="`Genel ilerleme %${progress.overall.percent}`"
 							:minutes="GRADUATION.minutes"
 							:percent="progress.overall.percent"
 							:state="
@@ -325,40 +341,13 @@ function reset() {
 									? 'in-progress'
 									: 'not-started'
 							"
+							:state-label="badgeLabel"
 						/>
 					</li>
 				</ul>
 			</section>
 
 			<aside class="space-y-5">
-				<section v-if="recommended" class="card p-5" aria-labelledby="rec-title">
-					<h2 id="rec-title" class="text-[15px] font-semibold">Önerilen sonraki ders</h2>
-					<RouterLink
-						:to="{
-							name: 'lesson',
-							params: { moduleId: recommended.module.id, lessonId: recommended.lesson.id },
-						}"
-						class="group mt-3 flex items-center gap-3 rounded-xl border border-ink-200/80 p-3 transition hover:border-brand-300 hover:bg-brand-50/40"
-					>
-						<AppTile :visual="recommended.module.visual" size="md" />
-						<div class="min-w-0 flex-1">
-							<p class="text-[12px] text-ink-500">
-								Modül {{ recommended.module.number }} · {{ recommended.lesson.minutes }} dk
-							</p>
-							<p
-								class="truncate text-[14.5px] font-semibold text-ink-900 group-hover:text-brand-800"
-							>
-								{{ recommended.lesson.title }}
-							</p>
-						</div>
-						<ArrowRight
-							:size="16"
-							class="shrink-0 text-ink-400 rtl:-scale-x-100"
-							aria-hidden="true"
-						/>
-					</RouterLink>
-				</section>
-
 				<section class="card p-5" aria-labelledby="badges-title">
 					<div class="flex items-center justify-between">
 						<h2 id="badges-title" class="text-[15px] font-semibold">Kazanılan rozetler</h2>

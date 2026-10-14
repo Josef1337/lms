@@ -1,7 +1,7 @@
 <script setup lang="ts">
-import { computed, nextTick, ref, watch } from 'vue'
+import { computed, nextTick, provide, ref, shallowReactive, watch } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
-import { Clock, Target } from 'lucide-vue-next'
+import { Check, CircleCheck, Clock, Flag, Target } from 'lucide-vue-next'
 import { getLessonRef, nextLessonRef } from '@/content'
 import { useProgress } from '@/stores/progress'
 import BlockRenderer from '@/components/lesson/BlockRenderer.vue'
@@ -12,8 +12,11 @@ import PhaseStepper from '@/components/lesson/PhaseStepper.vue'
 import {
 	PHASES,
 	PHASE_PURPOSE,
+	TASK_GOALS,
 	firstOpenStep,
 	requiredTasks,
+	taskIdOf,
+	type GoalItem,
 	type StepPhase,
 } from '@/components/lesson/phases'
 import AppTile from '@/components/ui/AppTile.vue'
@@ -37,6 +40,11 @@ const totalSteps = computed(() => lesson.value.steps.length + 1)
 const stepIndex = ref(0)
 const newBadges = ref<string[]>([])
 const heading = ref<HTMLElement | null>(null)
+const blocks = ref<HTMLElement | null>(null)
+
+/** Goals of the open-ended labs on this step, registered by their checklists. */
+const taskGoals = shallowReactive(new Map<string, () => GoalItem[]>())
+provide(TASK_GOALS, taskGoals)
 
 /** Furthest step an unfinished lesson may open: never past an open task. */
 function gate(id: string): number {
@@ -65,10 +73,36 @@ const furthest = computed(() =>
 	Math.min(progress.data.lessons[lessonId.value]?.furthest ?? 0, gate(lessonId.value))
 )
 
-const pending = computed(() =>
-	step.value ? requiredTasks(step.value).filter((id) => !progress.isTaskDone(id)) : []
-)
+const stepTasks = computed(() => (step.value ? requiredTasks(step.value) : []))
+const pending = computed(() => stepTasks.value.filter((id) => !progress.isTaskDone(id)))
 const canAdvance = computed(() => pending.value.length === 0)
+
+/** Short line under the step title: how many tasks, and what unlocks "Sonraki". */
+const taskLine = computed(() => {
+	const total = stepTasks.value.length
+	const left = pending.value.length
+	if (!left)
+		return total === 1 ? 'Bu adımın görevi tamamlandı.' : 'Bu adımdaki görevlerin hepsi tamamlandı.'
+	if (total === 1) return 'Bu adımda bir görev var; tamamladığınızda “Sonraki” açılır.'
+	return `Bu adımda ${total} görev var (${
+		total - left
+	}/${total} tamamlandı); hepsini bitirince “Sonraki” açılır.`
+})
+const pendingGoals = computed(() => pending.value.flatMap((id) => taskGoals.get(id)?.() ?? []))
+
+// Reaching the summary with every required task done completes the lesson at
+// once: the celebration shows straight away, and a learner who closes the tab
+// on the summary still has the lesson, its badges and overall progress saved.
+watch(
+	[isSummary, lessonId],
+	() => {
+		if (!isSummary.value || completed.value) return
+		if (firstOpenStep(lesson.value.steps, progress.isTaskDone) !== -1) return
+		newBadges.value = progress.completeLesson(lessonId.value)
+		progress.acknowledgeBadges(newBadges.value)
+	},
+	{ immediate: true }
+)
 
 const stepperItems = computed(() => [
 	...lesson.value.steps.map((s) => ({ phase: s.phase as StepPhase, title: s.title })),
@@ -98,16 +132,28 @@ async function go(index: number) {
 	heading.value?.focus({ preventScroll: true })
 }
 
+// The CSS reduced-motion rule does not reach a smooth scroll asked for in JS.
+const scrollBehavior = (): ScrollBehavior =>
+	window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth'
+
 // Next frame: Firefox drops a smooth scroll requested in the same frame as an
 // instant one when the page then gets shorter, leaving the next step half-way.
 function scrollToTop() {
-	requestAnimationFrame(() => window.scrollTo({ top: 0, behavior: 'smooth' }))
+	requestAnimationFrame(() => window.scrollTo({ top: 0, behavior: scrollBehavior() }))
 }
 
-function complete() {
-	newBadges.value = progress.completeLesson(lessonId.value)
-	progress.acknowledgeBadges(newBadges.value)
-	scrollToTop()
+/** "Göreve git" in the footer: scroll to the first open task and focus it. */
+function goToTask() {
+	const id = pending.value[0]
+	const marked = blocks.value?.querySelectorAll<HTMLElement>('[data-task-id]') ?? []
+	const target = Array.from(marked).find((el) => el.dataset.taskId === id)
+	if (!target) return
+	// The scroll-padding on <html> keeps it clear of the sticky header and footer.
+	target.scrollIntoView({ behavior: scrollBehavior(), block: 'start' })
+	// Focusable only while it holds focus, so clicks inside the task never land on it.
+	target.tabIndex = -1
+	target.addEventListener('blur', () => target.removeAttribute('tabindex'), { once: true })
+	target.focus({ preventScroll: true })
 }
 
 function continueOn() {
@@ -187,9 +233,49 @@ function continueOn() {
 						{{ step?.title ?? 'Ders özeti' }}
 					</h2>
 					<p class="mt-1.5 text-[14px] text-ink-500">{{ PHASE_PURPOSE[phase] }}</p>
+					<div
+						v-if="stepTasks.length"
+						:class="[
+							'mt-4 flex items-start gap-2.5 rounded-xl border px-3.5 py-2.5 text-[13.5px] leading-snug',
+							canAdvance
+								? 'border-success-100 bg-success-50/70 text-success-700'
+								: 'border-warning-100 bg-warning-50/60 text-ink-700',
+						]"
+					>
+						<CircleCheck v-if="canAdvance" :size="16" class="mt-px shrink-0" aria-hidden="true" />
+						<Flag v-else :size="16" class="mt-px shrink-0 text-warning-700" aria-hidden="true" />
+						<div class="min-w-0">
+							<p class="font-semibold">{{ taskLine }}</p>
+							<ul v-if="pendingGoals.length" class="mt-1.5 space-y-1" role="list">
+								<li v-for="g in pendingGoals" :key="g.label" class="flex items-start gap-2">
+									<span
+										:class="[
+											'mt-[3px] flex h-[14px] w-[14px] shrink-0 items-center justify-center rounded-full border-[1.5px]',
+											g.done
+												? 'border-success-600 bg-success-600 text-white'
+												: 'border-ink-300 bg-white',
+										]"
+										aria-hidden="true"
+									>
+										<Check v-if="g.done" :size="9" :stroke-width="3.5" />
+									</span>
+									<span :class="g.done && 'text-ink-500 line-through decoration-ink-300'">{{
+										g.label
+									}}</span>
+									<span class="sr-only">{{ g.done ? '(tamamlandı)' : '(bekliyor)' }}</span>
+								</li>
+							</ul>
+						</div>
+					</div>
 
-					<div v-if="step" class="mt-6 space-y-6">
-						<BlockRenderer v-for="(block, i) in step.blocks" :key="i" :block="block" />
+					<div v-if="step" ref="blocks" class="mt-6 space-y-6">
+						<template v-for="(block, i) in step.blocks" :key="i">
+							<!-- Tasks are marked so "Göreve git" can find and focus them. -->
+							<div v-if="taskIdOf(block)" :data-task-id="taskIdOf(block)" class="rounded-2xl">
+								<BlockRenderer :block="block" />
+							</div>
+							<BlockRenderer v-else :block="block" />
+						</template>
 					</div>
 					<LessonSummary
 						v-else
@@ -198,7 +284,6 @@ function continueOn() {
 						:next="next"
 						:completed="completed"
 						:new-badges="newBadges"
-						@complete="complete"
 					/>
 				</article>
 
@@ -234,13 +319,13 @@ function continueOn() {
 		<LessonControls
 			:current="stepIndex"
 			:total="totalSteps"
-			:can-advance="canAdvance"
+			:pending="pending.length"
 			:is-summary="isSummary"
 			:completed="completed"
 			:next-label="nextLabel"
 			@prev="go(stepIndex - 1)"
 			@next="go(stepIndex + 1)"
-			@complete="complete"
+			@go-to-task="goToTask"
 			@continue-on="continueOn"
 		/>
 	</div>

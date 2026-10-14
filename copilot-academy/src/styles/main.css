@@ -38,6 +38,14 @@
 	[hidden] {
 		display: none !important;
 	}
+
+	/* Whatever the browser scrolls into view (keyboard focus, "Göreve git")
+	   stops clear of the sticky header (57px) and the lesson's step bar
+	   (about 65px), so a focused option is never hidden behind either. */
+	html {
+		scroll-padding-top: 72px;
+		scroll-padding-bottom: 96px;
+	}
 }
 
 @layer components {
